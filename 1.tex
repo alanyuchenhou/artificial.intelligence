@@ -1,0 +1,92 @@
+\documentclass[12pt]{article}
+\renewcommand*{\familydefault}{\sfdefault}
+\usepackage{mathtools}
+\usepackage{fullpage}
+\usepackage{tabularx}
+\usepackage{graphicx} % Required for the inclusion of images
+\begin{document}
+\title{homework 1}
+\author{Yuchen Hou}
+\maketitle
+
+\section{mitsuku}
+\subsection{the conversation}
+Human: my name is Mitsuku
+Mitsuku: Ah Mitsuku! Isn't it a lovely name?
+Human: I don't have a name.
+Mitsuku: How do people identify you if you have no name?
+Human: do i have a name?
+Mitsuku: I don't think you have. You haven't told me.
+Human: I am  Larry Holder. Don't you remember me?
+Mitsuku:  Your name is Larry Holder. Of course I remember you well Larry Holder. We were talking about .
+Human: liar.
+Mitsuku: No I am telling the truth.
+Human: you are no human
+Mitsuku: I wouldn't want to be.
+Human: you are an agent.
+Mitsuku:  Perhaps I am. But you are certainly much more of an agent than I am.
+Human: what is my name?
+Mitsuku: Hmm. Your name is Larry Holder. Is it not?
+Human: what is the  first time we meet?
+Mitsuku: Give me a hint.
+Human: what is the first sentence I said to you?
+Mitsuku: You introduced yourself by telling me your name.
+Human: What did I say?
+Mitsuku: You said what is the first sentence I said to you?.
+Human: Repeat the first sentence I said to you.
+Mitsuku: the first sentence you said to me.
+\subsection{the explanation}
+I told her my name in the 1st sentence, then told her I don't have a name in the 2nd. She failed to recognize this obvious contradictory. Then she said I haven't told her my name, although I had. I also stated she wasn't a human and she even admited the truth that she is no human.
+
+\section{tetris}
+\subsection{task environment}
+See Table \ref{tab:environment}
+\begin{table}[htb]
+  \centering
+  \begin{tabularx}{\textwidth}{|l|X|} \hline
+    performance measure & number of horizontal lines filled and cleared \\ \hline
+    environment & the locations of the remains of previous tetriminos, the location and shape of the current tetriminos, the shape of the next tetriminos \\ \hline
+    actuators & the interface to the input API of the tetris game: rotate, move left, move right, fall through \\ \hline
+    sensors & the interface to the output API of the tetris game: score, the locations and shapes of the tetriminos \\ \hline
+  \end{tabularx}
+  \caption{task enviroment}
+  \label{tab:environment}
+\end{table}
+\subsection{task environment properties}
+See Table \ref{tab:properties}
+\begin{table}[htb]
+  \centering
+  \begin{tabularx}{\textwidth}{|l|X|} \hline
+    environment property & explanation \\ \hline
+    fully observable & the sensors give the agent access to the complete state of the environment \\ \hline
+    single agent & there is no other entity maximizing its performance measure which depends on the agent's behavior \\ \hline
+    stochastic & the next state (i.e. the next shape) is not completely determined by the current state and the action \\ \hline
+    sequential & the current decision affects future decisions \\ \hline
+    dynamic & the environment cannot change when the agent is deliberating \\ \hline
+    discrete & the states, percepts and actions are all discrete \\ \hline
+    known & the rule of the game is known to the programmer or agent \\ \hline
+  \end{tabularx}
+  \caption{task enviroment properties}
+  \label{tab:properties}
+\end{table}
+\subsection{structure of agents}
+I think utility-based agent is the best structure, because the agent usually has more than one choices of actions that fulfill the goal of clearing more lines, and utility function provides the agent the maximum implementation flexibility in choosing from multiple options.
+\section{wumpus world analysis}
+In this question, duplicated nodes are not generated, and the initialization of the root is not counted toward node generation.
+\subsection{breadth first search}
+12 nodes are generated, as shown in Figure \ref{fig:bfs}.
+\begin{figure}[htb]
+  \centering
+      {\includegraphics[width=1\linewidth]{1_3_a.png}} \rule{1\linewidth}{1pt}
+      \caption{depth first search}
+      \label{fig:bfs}
+\end{figure}
+\subsection{iterative deepening search}
+\begin{align*}
+  depth &= 3 \\
+  node\_count &= \sum_{n=1}^{depth} (depth-n+1) \cdot node\_count\_at\_level\_n \\
+  &= 3 \cdot 3 + 2 \cdot 5 + 1 \cdot 4 \\
+  &= 23 \\
+\end{align*}
+\section{wumpus world simulation}
+\end{document}
