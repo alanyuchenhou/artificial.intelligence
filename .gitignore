@@ -29,5 +29,6 @@
 
 # misc
 *.png
-# *.tsv
+*.tsv
 *.pdf
+*.zip
