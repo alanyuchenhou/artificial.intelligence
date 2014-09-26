@@ -28,24 +28,23 @@ class roomEnvironment
 };
 
 
-class SearchState
+class stage
 {
  public:
-  SearchState (Location& loc, Orientation& ori, int dep, SearchState* par, Action act)
+  stage (Location& l1, Orientation& o1, int d1, stage* p1, Action a1)
     {
-      location.X = loc.X;
-      location.Y = loc.Y;
-      orientation = ori;
-      depth = dep;
-      parent = par;
-      action = act;
+      depth = d1;
+      parent = p1;
+      action = a1;
+      location.X = l1.X;
+      location.Y = l1.Y;
+      orientation = o1;
     }
-
+  int depth;
+  stage* parent;
+  Action action;
   Location location;
   Orientation orientation;
-  int depth;
-  SearchState* parent;
-  Action action;
 };
 
 class Agent
@@ -54,28 +53,26 @@ class Agent
   Agent ();
   ~Agent ();
   void Initialize ();
-  Action Process (Percept& percept);
   void GameOver (int score);
+  Action Process (Percept& percept);
+  Action previousAction;
+  WorldState agentStatus;
+  roomEnvironment worldEnvironment[DIMENSION+1][DIMENSION+1];
 
-  void UpdateState (Percept& percept);
-  void LookForWumpus ();
-  void LookForPits ();
-  Action ChooseAction (Percept& percept);
-  bool FindSafeUnvisitedLocation (Location& location);
-  bool FindUnknownUnvisitedLocation (Location& location);
-  bool FindSafeLocationFacingWumpus (Location& location, Orientation& orientation);
-  Action FirstAction (SearchState* state);
-  Action Navigate (Location& startLocation, Orientation& startOrientation, Location& goalLocation, Orientation& goalOrientation);
-  SearchState* IterativeDeepeningSearch (SearchState* initialState, SearchState* goalState);
-  SearchState* DepthLimitedSearch (SearchState* initialState, SearchState* goalState, int depthLimit);
-  bool GoalTest (SearchState* state, SearchState* goalState);
-  SearchState* GetChildState (SearchState* state, Action action);
-  int CityBlockDistance (Location& location1, Location& location2);
-
-  Action lastAction;
-  WorldState agentState;
-  roomEnvironment agentWorld[DIMENSION+1][DIMENSION+1];
-  int worldSize;
+  void updateKnowledgeBase (Percept& percept);
+  /* void LookForWumpus (); */
+  /* void LookForPits (); */
+  Action getNextAction (Percept& percept);
+  Action getFirstMove (stage* state);
+  Action getMove (Location& startLocation, Orientation& startOrientation, Location& goalLocation, Orientation& goalOrientation);
+  stage* iterativeDeepeningSearch (stage* initialState, stage* goalState);
+  stage* depthLimitedSearch (stage* initialState, stage* goalState, int depthLimit);
+  stage* getChildState (stage* state, Action action);
+  int getDistance (Location& l1, Location& l2);
+  bool getSafeLocation (Location& location);
+  bool getRiskyLocation (Location& location);
+  bool getShootingPosition (Location& location, Orientation& orientation);
+  bool goalTest (stage* state, stage* goalState);
 };
 
 #endif
