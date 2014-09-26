@@ -9,8 +9,8 @@
 \author{Yuchen Hou}
 \maketitle
 
-\section{mitsuku}
-\subsection{the conversation}
+\section{What is AI}
+\subsection{Turing test}
 Human: my name is Mitsuku
 Mitsuku: Ah Mitsuku! Isn't it a lovely name?
 Human: I don't have a name.
@@ -35,11 +35,11 @@ Human: What did I say?
 Mitsuku: You said what is the first sentence I said to you?.
 Human: Repeat the first sentence I said to you.
 Mitsuku: the first sentence you said to me.
-\subsection{the explanation}
+\subsection{Test result}
 I told her my name in the 1st sentence, then told her I don't have a name in the 2nd. She failed to recognize this obvious contradictory. Then she said I haven't told her my name, although I had. I also stated she wasn't a human and she even admited the truth that she is no human.
 
-\section{tetris}
-\subsection{task environment}
+\section{The nature of environments}
+\subsection{Specifiying the task environment}
 See Table \ref{tab:environment}
 \begin{table}[htb]
   \centering
@@ -52,7 +52,7 @@ See Table \ref{tab:environment}
   \caption{task enviroment}
   \label{tab:environment}
 \end{table}
-\subsection{task environment properties}
+\subsection{Properties of task environments}
 See Table \ref{tab:properties}
 \begin{table}[htb]
   \centering
@@ -69,24 +69,24 @@ See Table \ref{tab:properties}
   \caption{task enviroment properties}
   \label{tab:properties}
 \end{table}
-\subsection{structure of agents}
+\subsection{The structure of agents}
 I think utility-based agent is the best structure, because the agent usually has more than one choices of actions that fulfill the goal of clearing more lines, and utility function provides the agent the maximum implementation flexibility in choosing from multiple options.
-\section{wumpus world analysis}
+\section{Uninformed search strategies}
 In this question, duplicated nodes are not generated, and the initialization of the root is not counted toward node generation.
-\subsection{breadth first search}
+\subsection{Breadth first search}
 12 nodes are generated, as shown in Figure \ref{fig:bfs}.
 \begin{figure}[htb]
   \centering
-      {\includegraphics[width=1\linewidth]{1_3_a.png}} \rule{1\linewidth}{1pt}
+      {\includegraphics[width=1\linewidth]{homework1_3_a.png}} \rule{1\linewidth}{1pt}
       \caption{depth first search}
       \label{fig:bfs}
 \end{figure}
-\subsection{iterative deepening search}
+\subsection{Iterative deepening search}
 \begin{align*}
   depth &= 3 \\
   node\_count &= \sum_{n=1}^{depth} (depth-n+1) \cdot node\_count\_at\_level\_n \\
   &= 3 \cdot 3 + 2 \cdot 5 + 1 \cdot 4 \\
   &= 23 \\
 \end{align*}
-\section{wumpus world simulation}
+
 \end{document}

@@ -1,8 +1,8 @@
-This is pdfTeXk, Version 3.141592-1.40.3 (Web2C 7.5.6) (format=pdflatex 2012.5.16)  10 SEP 2014 17:53
+This is pdfTeXk, Version 3.141592-1.40.3 (Web2C 7.5.6) (format=pdflatex 2012.5.16)  24 SEP 2014 15:38
 entering extended mode
  %&-line parsing enabled.
-**1.tex
-(./1.tex
+**homework1.tex
+(./homework1.tex
 LaTeX2e <2005/12/01>
 Babel <v3.8h> and hyphenation patterns for english, usenglishmax, dumylang, noh
 yphenation, arabic, basque, bulgarian, coptic, welsh, czech, slovak, german, ng
@@ -155,8 +155,8 @@ File: pdftex.def 2007/01/08 v0.04d Graphics/color for pdfTeX
 ))
 \Gin@req@height=\dimen122
 \Gin@req@width=\dimen123
-) (./1.aux)
-\openout1 = `1.aux'.
+) (./homework1.aux)
+\openout1 = `homework1.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 7.
 LaTeX Font Info:    ... okay on input line 7.
@@ -173,29 +173,30 @@ LaTeX Font Info:    ... okay on input line 7.
  [1
 
 {/usr/share/texmf/fonts/map/pdftex/updmap/pdftex.map}]
-<1_3_a.png, id=8, 599.23875pt x 341.275pt>
-File: 1_3_a.png Graphic file (type png)
- <use 1_3_a.png> [2] [3 <./1_3_a.png
+<homework1_3_a.png, id=8, 599.23875pt x 341.275pt>
+File: homework1_3_a.png Graphic file (type png)
+ <use homework1_3_a.png>
+[2] [3 <./homework1_3_a.png
 
-pdfTeX warning: pdflatex (file ./1_3_a.png): PDF inclusion: Page Group detected
- which pdfTeX can't handle. Ignoring it.
->] (./1.aux) ) 
+pdfTeX warning: pdflatex (file ./homework1_3_a.png): PDF inclusion: Page Group 
+detected which pdfTeX can't handle. Ignoring it.
+>] (./homework1.aux) ) 
 Here is how much of TeX's memory you used:
  1717 strings out of 256216
- 21592 string characters out of 1917072
+ 21704 string characters out of 1917072
  79257 words of memory out of 1500000
  5014 multiletter control sequences out of 10000+200000
  10828 words of font info for 39 fonts, out of 1200000 for 2000
  645 hyphenation exceptions out of 8191
- 33i,11n,22p,289b,265s stack positions out of 5000i,500n,6000p,200000b,15000s
-</usr/share/texmf/fonts/type1/bluesky/cm/cmex10.pfb></usr/share/t
-exmf/fonts/type1/bluesky/cm/cmmi12.pfb></usr/share/texmf/fonts/type1/bluesky/cm
-/cmmi8.pfb></usr/share/texmf/fonts/type1/bluesky/cm/cmr12.pfb></usr/share/texmf
-/fonts/type1/bluesky/cm/cmr8.pfb></usr/share/texmf/fonts/type1/bluesky/cm/cmss1
-2.pfb></usr/share/texmf/fonts/type1/bluesky/cm/cmss17.pfb></usr/share/texmf/fon
-ts/type1/bluesky/cm/cmssbx10.pfb></usr/share/texmf/fonts/type1/bluesky/cm/cmsy1
-0.pfb>
-Output written on 1.pdf (3 pages, 92264 bytes).
+ 33i,11n,22p,297b,265s stack positions out of 5000i,500n,6000p,200000b,15000s
+</usr/share/texmf/fonts/type1/bluesky/cm/cmex10.pfb></usr
+/share/texmf/fonts/type1/bluesky/cm/cmmi12.pfb></usr/share/texmf/fonts/type1/bl
+uesky/cm/cmmi8.pfb></usr/share/texmf/fonts/type1/bluesky/cm/cmr12.pfb></usr/sha
+re/texmf/fonts/type1/bluesky/cm/cmr8.pfb></usr/share/texmf/fonts/type1/bluesky/
+cm/cmss12.pfb></usr/share/texmf/fonts/type1/bluesky/cm/cmss17.pfb></usr/share/t
+exmf/fonts/type1/bluesky/cm/cmssbx10.pfb></usr/share/texmf/fonts/type1/bluesky/
+cm/cmsy10.pfb>
+Output written on homework1.pdf (3 pages, 92838 bytes).
 PDF statistics:
  57 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 131072)
