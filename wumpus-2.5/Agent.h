@@ -1,6 +1,6 @@
 #ifndef AGENT_H
 #define AGENT_H
-#define MAX_WORLD_SIZE 4
+#define DIMENSION 4
 #include <cstdlib>
 #include <iostream>
 #include <list>
@@ -14,6 +14,19 @@
 #include "Orientation.h"
 #include "Percept.h"
 #include "WorldState.h"
+
+enum environmentFeature {YES, NO, UNKNOWN};
+class roomEnvironment
+{
+ public:
+  bool visited;
+  environmentFeature wumpus;
+  environmentFeature pit;
+  environmentFeature safe;
+  environmentFeature stench;
+  environmentFeature breeze;
+};
+
 
 class SearchState
 {
@@ -32,20 +45,7 @@ class SearchState
   Orientation orientation;
   int depth;
   SearchState* parent;
-  Action action; // action used to get to this state from parent state
-};
-
-enum StatusType {YES, NO, UNKNOWN};
-
-class LocationStatus
-{
- public:
-  bool visited;
-  StatusType safe;
-  StatusType stench;
-  StatusType breeze;
-  StatusType wumpus;
-  StatusType pit;
+  Action action;
 };
 
 class Agent
@@ -74,8 +74,8 @@ class Agent
 
   Action lastAction;
   WorldState agentState;
-  LocationStatus agentWorld[MAX_WORLD_SIZE+1][MAX_WORLD_SIZE+1];
+  roomEnvironment agentWorld[DIMENSION+1][DIMENSION+1];
   int worldSize;
 };
 
-#endif // AGENT_H
+#endif

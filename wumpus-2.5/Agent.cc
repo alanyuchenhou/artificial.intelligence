@@ -1,28 +1,27 @@
+// I received help from my friends Xiyu Xie and Prabal Poudel.
+// The help I received from them includes both algorithm and data structure design.
 #include "Agent.h"
 using namespace std;
 
 Agent::Agent ()
 {
-
 }
 
 Agent::~Agent ()
 {
-
 }
 
 void Agent::Initialize ()
 {
-  int x, y;
   agentState.agentLocation = Location(1,1);
   agentState.agentOrientation = RIGHT;
   agentState.agentHasGold = false;
   agentState.wumpusAlive = true;
   agentState.wumpusLocation = Location(0,0); //unknown
   lastAction = SHOOT; // dummy action to start
-  for (x = 1; x <= MAX_WORLD_SIZE; x++)
+  for (int x = 1; x <= DIMENSION; x++)
     {
-      for (y = 1; y <= MAX_WORLD_SIZE; y++)
+      for (int y = 1; y <= DIMENSION; y++)
     	{
 	  agentWorld[x][y].visited = false;
 	  agentWorld[x][y].safe = UNKNOWN;
@@ -36,7 +35,7 @@ void Agent::Initialize ()
   agentWorld[1][1].safe = YES;
   agentWorld[1][1].wumpus = NO;
   agentWorld[1][1].pit = NO;
-  worldSize = MAX_WORLD_SIZE;
+  worldSize = DIMENSION;
 }
 
 Action Agent::Process (Percept& percept)
