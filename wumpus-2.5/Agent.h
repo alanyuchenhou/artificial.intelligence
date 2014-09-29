@@ -15,16 +15,16 @@
 #include "Percept.h"
 #include "WorldState.h"
 
-enum environmentFeature {YES, NO, UNKNOWN};
-class roomEnvironment
+enum feature {YES, NO, UNKNOWN};
+class room
 {
  public:
   bool visited;
-  environmentFeature wumpus;
-  environmentFeature pit;
-  environmentFeature safe;
-  environmentFeature stench;
-  environmentFeature breeze;
+  feature wumpus;
+  feature pit;
+  feature safe;
+  feature stench;
+  feature breeze;
 };
 
 
@@ -54,14 +54,10 @@ class Agent
   ~Agent ();
   void Initialize ();
   void GameOver (int score);
-  Action Process (Percept& percept);
-  Action previousAction;
-  WorldState agentStatus;
-  roomEnvironment worldEnvironment[DIMENSION+1][DIMENSION+1];
-
+  void updateCoordinate (Percept&percept);
   void updateKnowledgeBase (Percept& percept);
-  /* void LookForWumpus (); */
-  /* void LookForPits (); */
+  void locateWumpus ();
+  void locatePits ();
   Action getNextAction (Percept& percept);
   Action getFirstMove (stage* state);
   Action getMove (Location& startLocation, Orientation& startOrientation, Location& goalLocation, Orientation& goalOrientation);
@@ -73,6 +69,17 @@ class Agent
   bool getRiskyLocation (Location& location);
   bool getShootingPosition (Location& location, Orientation& orientation);
   bool goalTest (stage* state, stage* goalState);
+  Action Process (Percept& percept);
+ private:
+  Action previousAction;
+  Location agentLocation;
+  Orientation agentOrientation;
+  bool agentHasArrow;
+  bool agentHasGold;
+  Location wumpusLocation;
+  bool wumpusAlive;
+  bool wumpusLocated;
+  room site[DIMENSION+2][DIMENSION+2];
 };
 
 #endif

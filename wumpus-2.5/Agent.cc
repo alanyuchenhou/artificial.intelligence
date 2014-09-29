@@ -13,251 +13,241 @@ Agent::~Agent ()
 
 void Agent::Initialize ()
 {
-  agentStatus.agentLocation = Location(1,1);
-  agentStatus.agentOrientation = RIGHT;
-  agentStatus.agentHasGold = false;
-  agentStatus.wumpusAlive = true;
-  agentStatus.wumpusLocation = Location(0,0); //unknown
-  previousAction = SHOOT; // dummy action to start
+  agentLocation = Location(1,1);
+  agentOrientation = RIGHT;
+  agentHasGold = false;
+  wumpusAlive = true;
+  wumpusLocated = NO;
+  wumpusLocation = Location(0,0);
+  previousAction = CLIMB;
   for (int x = 1; x <= DIMENSION; x++)
     {
       for (int y = 1; y <= DIMENSION; y++)
     	{
-	  worldEnvironment[x][y].visited = false;
-	  worldEnvironment[x][y].safe = UNKNOWN;
-	  worldEnvironment[x][y].stench = UNKNOWN;
-	  worldEnvironment[x][y].breeze = UNKNOWN;
-	  worldEnvironment[x][y].wumpus = UNKNOWN;
-	  worldEnvironment[x][y].pit = UNKNOWN;
+	  site[x][y].visited = false;
+	  site[x][y].safe = UNKNOWN;
+	  site[x][y].stench = UNKNOWN;
+	  site[x][y].breeze = UNKNOWN;
+	  site[x][y].wumpus = UNKNOWN;
+	  site[x][y].pit = UNKNOWN;
     	}
     }
-  worldEnvironment[1][1].visited = true;
-  worldEnvironment[1][1].safe = YES;
-  worldEnvironment[1][1].wumpus = NO;
-  worldEnvironment[1][1].pit = NO;
+  site[1][1].visited = true;
+  site[1][1].safe = YES;
+  site[1][1].wumpus = NO;
+  site[1][1].pit = NO;
 }
 
 Action Agent::Process (Percept& percept)
 {
+  cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< \n";
   updateKnowledgeBase (percept);
   previousAction = getNextAction (percept);
-
+  cout << ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> \n";
   return previousAction;
 }
 
 void Agent::GameOver (int score)
 {
-  cout << "my score is: " << score << endl;
+  score = 0;
 }
-
-void Agent::updateKnowledgeBase (Percept& percept)
+int Agent::getDistance (Location& l1, Location& l2)
 {
-  int x, y;
-
-  x = agentStatus.agentLocation.X;
-  y = agentStatus.agentLocation.Y;
-
-  // Update agent state based on last action and given percept
+  return (abs (l1.X - l2.X) + abs (l1.Y - l2.Y));
+}
+void Agent::updateCoordinate (Percept&percept)
+{
   if ((previousAction == FORWARD) && (! percept.Bump))
     {
-      if (agentStatus.agentOrientation == RIGHT)
-	x++;
-      else if (agentStatus.agentOrientation == LEFT)
-	x--;
-      else if (agentStatus.agentOrientation == UP)
-	y++;
-      else if (agentStatus.agentOrientation == DOWN)
-	y--;
-      agentStatus.agentLocation = Location(x,y);
+      if (agentOrientation == RIGHT)
+	agentLocation.X++;
+      else if (agentOrientation == LEFT)
+	agentLocation.X--;
+      else if (agentOrientation == UP)
+	agentLocation.Y++;
+      else if (agentOrientation == DOWN)
+	agentLocation.Y--;
     }
   if (previousAction == TURNLEFT)
     {
-      if (agentStatus.agentOrientation == RIGHT)
-	agentStatus.agentOrientation = UP;
-      else if (agentStatus.agentOrientation == LEFT)
-	agentStatus.agentOrientation = DOWN;
-      else if (agentStatus.agentOrientation == UP)
-	agentStatus.agentOrientation = LEFT;
-      else if (agentStatus.agentOrientation == DOWN)
-	agentStatus.agentOrientation = RIGHT;
+      if (agentOrientation == RIGHT)
+	agentOrientation = UP;
+      else if (agentOrientation == LEFT)
+	agentOrientation = DOWN;
+      else if (agentOrientation == UP)
+	agentOrientation = LEFT;
+      else if (agentOrientation == DOWN)
+	agentOrientation = RIGHT;
     }
   if (previousAction == TURNRIGHT)
     {
-      if (agentStatus.agentOrientation == RIGHT)
-	agentStatus.agentOrientation = DOWN;
-      else if (agentStatus.agentOrientation == LEFT)
-	agentStatus.agentOrientation = UP;
-      else if (agentStatus.agentOrientation == UP)
-	agentStatus.agentOrientation = RIGHT;
-      else if (agentStatus.agentOrientation == DOWN)
-	agentStatus.agentOrientation = LEFT;
+      if (agentOrientation == RIGHT)
+	agentOrientation = DOWN;
+      else if (agentOrientation == LEFT)
+	agentOrientation = UP;
+      else if (agentOrientation == UP)
+	agentOrientation = RIGHT;
+      else if (agentOrientation == DOWN)
+	agentOrientation = LEFT;
     }
-  // Update pit/wumpus information (hey, I'm alive)
-  worldEnvironment[x][y].pit = NO;
-  if (agentStatus.wumpusAlive)
-    worldEnvironment[x][y].wumpus = NO;
-
-  // Update stench info
-  if (percept.Stench)
-    worldEnvironment[x][y].stench = YES;
-  else worldEnvironment[x][y].stench = NO;
-
-  // Update breeze info
-  if (percept.Breeze)
-    worldEnvironment[x][y].breeze = YES;
-  else worldEnvironment[x][y].breeze = NO;
-
-  // Update wumpus health
-  if (percept.Scream)
-    agentStatus.wumpusAlive = false;
-
-  // Update agent's gold status (we only do a grab if saw glitter)
+}
+void Agent::updateKnowledgeBase (Percept& percept)
+{
+  updateCoordinate(percept);
+  int x, y;
+  x = agentLocation.X;
+  y = agentLocation.Y;
   if (previousAction == GRAB)
-    agentStatus.agentHasGold = true;
-
-  // Update safe and visited information about the world
-  worldEnvironment[x][y].visited = true;
-  worldEnvironment[x][y].safe = YES;
-  if (((! agentStatus.wumpusAlive) || (! percept.Stench)) && (! percept.Breeze))
-    {
-      // locations adjacent to (x,y) are safe
-      if (x > 1)
-	worldEnvironment[x-1][y].safe = YES;
-      if (x < DIMENSION)
-	worldEnvironment[x+1][y].safe = YES;
-      if (y > 1)
-	worldEnvironment[x][y-1].safe = YES;
-      if (y < DIMENSION)
-	worldEnvironment[x][y+1].safe = YES;
+    agentHasGold = true;
+  site[x][y].visited = true;
+  site[x][y].safe = YES;
+  site[x][y].pit = NO;
+  site[x][y].wumpus = NO;
+  if (percept.Scream) {
+    wumpusAlive = false;
+  }
+  if (percept.Stench)
+    site[x][y].stench = YES;
+  else site[x][y].stench = NO;
+  if (percept.Breeze)
+    site[x][y].breeze = YES;
+  else site[x][y].breeze = NO;
+  for (int xi = x-1; xi <= x+1; xi++) {
+    for (int yi = y-1; yi <= y+1; yi++) {
+      if ( ((xi == x)&&(yi != y)) || ((yi == y)&&(xi != x)) ) {
+	if (! percept.Breeze)
+	  site[xi][yi].pit = NO;
+	if (! percept.Stench)
+	  site[xi][yi].wumpus = NO;
+	if ( ((! wumpusAlive)||(site[xi][yi].wumpus == NO)) && (site[xi][yi].pit == NO) ) {
+	  site[xi][yi].safe = YES;
+	}
+      }
     }
-  // // Check if we can find the elusive wumpus
-  // if (agentStatus.wumpusAlive && (agentStatus.wumpusLocation == Location(0,0)))
-  //   LookForWumpus();
-
-  // // Check if we can find a pit
-  // LookForPits();
+  }
+  locatePits();
+  if (wumpusAlive && !wumpusLocated) {
+    locateWumpus();
+  }
 }
 
-// Check if we can pinpoint the wumpus's location.
-// For each stench, see if only one adjacent location where wumpus != NO.
-// void Agent::LookForWumpus ()
-// {
-//   int x, y;
-//   int possibleWumpusLocations;
-//   Location wumpusLocation;
+void Agent::locatePits ()
+{
+  int x, y;
+  int pitSiteCount;
+  Location pitSite;
 
-//   for (x = 1; x <= DIMENSION; x++)
-//     {
-//       for (y = 1; y <= DIMENSION; y++)
-// 	{
-// 	  if (worldEnvironment[x][y].stench == YES)
-// 	    {
-// 	      possibleWumpusLocations = 4;
-// 	      // Check UP from (x,y)
-// 	      if ((y == DIMENSION) || (worldEnvironment[x][y+1].wumpus == NO))
-// 		{
-// 		  possibleWumpusLocations--;
-// 		} else {
-// 		wumpusLocation.X = x;
-// 		wumpusLocation.Y = y+1;
-// 	      }
-// 	      // Check DOWN from (x,y)
-// 	      if ((y == 1) || (worldEnvironment[x][y-1].wumpus == NO))
-// 		{
-// 		  possibleWumpusLocations--;
-// 		} else {
-// 		wumpusLocation.X = x;
-// 		wumpusLocation.Y = y-1;
-// 	      }
-// 	      // Check LEFT from (x,y)
-// 	      if ((x == 1) || (worldEnvironment[x-1][y].wumpus == NO))
-// 		{
-// 		  possibleWumpusLocations--;
-// 		} else {
-// 		wumpusLocation.X = x-1;
-// 		wumpusLocation.Y = y;
-// 	      }
-// 	      // Check RIGHT from (x,y)
-// 	      if ((x == DIMENSION) || (worldEnvironment[x+1][y].wumpus == NO))
-// 		{
-// 		  possibleWumpusLocations--;
-// 		} else {
-// 		wumpusLocation.X = x+1;
-// 		wumpusLocation.Y = y;
-// 	      }
-// 	      if (possibleWumpusLocations == 1)
-// 		{
-// 		  // Found it
-// 		  cout << "Found wumpus at (" << wumpusLocation.X << "," << wumpusLocation.Y << ")\n";
-// 		  agentStatus.wumpusLocation.X = wumpusLocation.X;
-// 		  agentStatus.wumpusLocation.Y = wumpusLocation.Y;
-// 		  worldEnvironment[wumpusLocation.X][wumpusLocation.Y].wumpus = YES;
-// 		  // ***** TODO: Might want to set all other locations to wumpus=NO
-// 		  return; // only one wumpus
-// 		}
-// 	    }
-// 	}
-//     }
-// }
-
-// Check if we can pinpoint any pit locations.
-// For each breeze, see if only one adjacent location where pit != NO.
-// void Agent::LookForPits ()
-// {
-//   int x, y;
-//   int possiblePitLocations;
-//   Location pitLocation;
-
-//   for (x = 1; x <= DIMENSION; x++)
-//     {
-//       for (y = 1; y <= DIMENSION; y++)
-// 	{
-// 	  if (worldEnvironment[x][y].breeze == YES)
-// 	    {
-// 	      possiblePitLocations = 4;
-// 	      // Check UP from (x,y)
-// 	      if ((y == DIMENSION) || (worldEnvironment[x][y+1].pit == NO))
-// 		{
-// 		  possiblePitLocations--;
-// 		} else {
-// 		pitLocation.X = x;
-// 		pitLocation.Y = y+1;
-// 	      }
-// 	      // Check DOWN from (x,y)
-// 	      if ((y == 1) || (worldEnvironment[x][y-1].pit == NO))
-// 		{
-// 		  possiblePitLocations--;
-// 		} else {
-// 		pitLocation.X = x;
-// 		pitLocation.Y = y-1;
-// 	      }
-// 	      // Check LEFT from (x,y)
-// 	      if ((x == 1) || (worldEnvironment[x-1][y].pit == NO))
-// 		{
-// 		  possiblePitLocations--;
-// 		} else {
-// 		pitLocation.X = x-1;
-// 		pitLocation.Y = y;
-// 	      }
-// 	      // Check RIGHT from (x,y)
-// 	      if ((x == DIMENSION) || (worldEnvironment[x+1][y].pit == NO))
-// 		{
-// 		  possiblePitLocations--;
-// 		} else {
-// 		pitLocation.X = x+1;
-// 		pitLocation.Y = y;
-// 	      }
-// 	      if ((possiblePitLocations == 1) && (worldEnvironment[pitLocation.X][pitLocation.Y].pit == UNKNOWN))
-// 		{
-// 		  // Found a new pit
-// 		  cout << "Found pit at (" << pitLocation.X << "," << pitLocation.Y << ")\n";
-// 		  worldEnvironment[pitLocation.X][pitLocation.Y].pit = YES;
-// 		  worldEnvironment[pitLocation.X][pitLocation.Y].safe = NO;
-// 		}
-// 	    }
-// 	}
-//     }
-// }
+  for (x = 1; x <= DIMENSION; x++)
+    {
+      for (y = 1; y <= DIMENSION; y++)
+	{
+	  if (site[x][y].breeze == YES)
+	    {
+	      pitSiteCount = 4;
+	      if ((y == DIMENSION) || (site[x][y+1].pit == NO))
+		{
+		  pitSiteCount--;
+		}
+	      else {
+		pitSite.X = x;
+		pitSite.Y = y+1;
+	      }
+	      if ((y == 1) || (site[x][y-1].pit == NO))
+		{
+		  pitSiteCount--;
+		}
+	      else {
+		pitSite.X = x;
+		pitSite.Y = y-1;
+	      }
+	      if ((x == 1) || (site[x-1][y].pit == NO))
+		{
+		  pitSiteCount--;
+		}
+	      else {
+		pitSite.X = x-1;
+		pitSite.Y = y;
+	      }
+	      if ((x == DIMENSION) || (site[x+1][y].pit == NO))
+		{
+		  pitSiteCount--;
+		}
+	      else {
+		pitSite.X = x+1;
+		pitSite.Y = y;
+	      }
+	      if ((pitSiteCount == 1) && (site[pitSite.X][pitSite.Y].pit == UNKNOWN))
+		{
+		  cout << "pit at (" << pitSite.X << "," << pitSite.Y << ")\n";
+		  site[pitSite.X][pitSite.Y].pit = YES;
+		  site[pitSite.X][pitSite.Y].safe = NO;
+		}
+	    }
+	}
+    }
+}
+void Agent::locateWumpus ()
+{
+  int x, y;
+  int wumpusSiteCount;
+  Location wumpusSite;
+  for (x = 1; x <= DIMENSION; x++)
+    {
+      for (y = 1; y <= DIMENSION; y++)
+	{
+	  if (site[x][y].stench == YES)
+	    {
+	      wumpusSiteCount = 4;
+	      if ((y == DIMENSION) || (site[x][y+1].wumpus == NO))
+		{
+		  wumpusSiteCount--;
+		}
+	      else {
+		wumpusSite.X = x;
+		wumpusSite.Y = y+1;
+	      }
+	      if ((y == 1) || (site[x][y-1].wumpus == NO))
+		{
+		  wumpusSiteCount--;
+		}
+	      else {
+		wumpusSite.X = x;
+		wumpusSite.Y = y-1;
+	      }
+	      if ((x == 1) || (site[x-1][y].wumpus == NO))
+		{
+		  wumpusSiteCount--;
+		}
+	      else {
+		wumpusSite.X = x-1;
+		wumpusSite.Y = y;
+	      }
+	      if ((x == DIMENSION) || (site[x+1][y].wumpus == NO))
+		{
+		  wumpusSiteCount--;
+		}
+	      else {
+		wumpusSite.X = x+1;
+		wumpusSite.Y = y;
+	      }
+	      if (wumpusSiteCount == 1)
+		{
+		  wumpusLocated = true;
+		  cout << "wumpus at (" << wumpusSite.X << "," << wumpusSite.Y << ")\n";
+		  Agent::wumpusLocation = wumpusSite;
+		  for (int x = 1; x <= DIMENSION; x++) {
+		    for (int y = 1; y <= DIMENSION; y++) {
+		      site[x][y].wumpus = NO;
+		    }
+		  }
+		  site[wumpusSite.X][wumpusSite.Y].wumpus = YES;
+		  site[wumpusSite.X][wumpusSite.Y].safe = NO;
+		  return;
+		}
+	    }
+	}
+    }
+}
 
 Action Agent::getNextAction (Percept& percept)
 {
@@ -271,35 +261,35 @@ Action Agent::getNextAction (Percept& percept)
     {
       // If agent sees gold, then GRAB
       action = GRAB;
-    } else if (agentStatus.agentHasGold) {
+    } else if (agentHasGold) {
     // If agent has gold, then navigate to (1,1) and climb
-    if (agentStatus.agentLocation == location11)
+    if (agentLocation == location11)
       {
 	action = CLIMB;
       } else {
-      action = getMove (agentStatus.agentLocation, agentStatus.agentOrientation, location11, agentStatus.agentOrientation);
+      action = getMove (agentLocation, agentOrientation, location11, agentOrientation);
     }
   } else if (getSafeLocation (goalLocation)) {
     // If no gold, then navigate to safe, unvisited location (if exists)
-    action = getMove (agentStatus.agentLocation, agentStatus.agentOrientation, goalLocation, agentStatus.agentOrientation);
-  } else if (agentStatus.wumpusAlive && getShootingPosition (goalLocation, goalOrientation)) {
+    action = getMove (agentLocation, agentOrientation, goalLocation, agentOrientation);
+  } else if (wumpusAlive && getShootingPosition (goalLocation, goalOrientation)) {
     // If can shoot live wumpus, then navigate to safe location facing wumpus and SHOOT
-    if ((agentStatus.agentLocation == goalLocation) && (agentStatus.agentOrientation == goalOrientation))
+    if ((agentLocation == goalLocation) && (agentOrientation == goalOrientation))
       {
 	action = SHOOT;
       } else {
-      action = getMove (agentStatus.agentLocation, agentStatus.agentOrientation, goalLocation, goalOrientation);
+      action = getMove (agentLocation, agentOrientation, goalLocation, goalOrientation);
     }
   } else if (getRiskyLocation (goalLocation)) {
     // If none of the above works out, then take a risk and navigate to an unknown, unvisited location (if exists)
-    worldEnvironment[goalLocation.X][goalLocation.Y].safe = YES; //temporarily, so search can get there.
-    action = getMove (agentStatus.agentLocation, agentStatus.agentOrientation, goalLocation, agentStatus.agentOrientation);
-    worldEnvironment[goalLocation.X][goalLocation.Y].safe = UNKNOWN;
-  } else if (agentStatus.agentLocation == location11) { // nothing above worked, so just give up
+    site[goalLocation.X][goalLocation.Y].safe = YES; //temporarily, so search can get there.
+    action = getMove (agentLocation, agentOrientation, goalLocation, agentOrientation);
+    site[goalLocation.X][goalLocation.Y].safe = UNKNOWN;
+  } else if (agentLocation == location11) { // nothing above worked, so just give up
     action = CLIMB;
   } else {
-    action = getMove (agentStatus.agentLocation, agentStatus.agentOrientation,
-		       location11, agentStatus.agentOrientation);
+    action = getMove (agentLocation, agentOrientation,
+		       location11, agentOrientation);
   }
   return action;
 }
@@ -315,7 +305,7 @@ bool Agent::getSafeLocation (Location& location)
     {
       for (y = 1; y <= DIMENSION; y++)
 	{
-	  if ((worldEnvironment[x][y].safe == YES) && (! worldEnvironment[x][y].visited))
+	  if ((site[x][y].safe == YES) && (! site[x][y].visited))
 	    {
 	      found = true;
 	      location.X = x;
@@ -337,31 +327,31 @@ bool Agent::getRiskyLocation (Location& location)
     {
       for (y = 1; y <= DIMENSION; y++)
 	{
-	  if (worldEnvironment[x][y].safe == YES)
+	  if (site[x][y].safe == YES)
 	    {
 	      // Check UP
-	      if ((y < DIMENSION) && (worldEnvironment[x][y+1].safe == UNKNOWN))
+	      if ((y < DIMENSION) && (site[x][y+1].safe == UNKNOWN))
 		{
 		  found = true;
 		  location.X = x;
 		  location.Y = y+1;
 		}
 	      // Check DOWN
-	      if ((y > 1) && (worldEnvironment[x][y-1].safe == UNKNOWN))
+	      if ((y > 1) && (site[x][y-1].safe == UNKNOWN))
 		{
 		  found = true;
 		  location.X = x;
 		  location.Y = y-1;
 		}
 	      // Check LEFT
-	      if ((x > 1) && (worldEnvironment[x-1][y].safe == UNKNOWN))
+	      if ((x > 1) && (site[x-1][y].safe == UNKNOWN))
 		{
 		  found = true;
 		  location.X = x-1;
 		  location.Y = y;
 		}
 	      // Check RIGHT
-	      if ((x < DIMENSION) && (worldEnvironment[x+1][y].safe == UNKNOWN))
+	      if ((x < DIMENSION) && (site[x+1][y].safe == UNKNOWN))
 		{
 		  found = true;
 		  location.X = x+1;
@@ -380,14 +370,14 @@ bool Agent::getShootingPosition (Location& location, Orientation& orientation)
   int x, y;
   bool found = false;
 
-  if (! (agentStatus.wumpusLocation == Location(0,0)))
+  if (! (wumpusLocation == Location(0,0)))
     {
       for (x = 1; x <= DIMENSION; x++)
 	{
 	  for (y = 1; y <= DIMENSION; y++)
 	    {
-	      if ((! found) && (worldEnvironment[x][y].safe == YES) &&
-		  ((x == agentStatus.wumpusLocation.X) || (y == agentStatus.wumpusLocation.Y)))
+	      if ((! found) && (site[x][y].safe == YES) &&
+		  ((x == wumpusLocation.X) || (y == wumpusLocation.Y)))
 		{
 		  found = true;
 		  location.X = x;
@@ -398,16 +388,16 @@ bool Agent::getShootingPosition (Location& location, Orientation& orientation)
       if (found)
 	{
 	  // Determine orientation
-	  if (location.X == agentStatus.wumpusLocation.X)
+	  if (location.X == wumpusLocation.X)
 	    {
-	      if (location.Y < agentStatus.wumpusLocation.Y)
+	      if (location.Y < wumpusLocation.Y)
 		{
 		  orientation = UP;
 		} else {
 		orientation = DOWN;
 	      }
 	    } else {
-	    if (location.X < agentStatus.wumpusLocation.X)
+	    if (location.X < wumpusLocation.X)
 	      {
 		orientation = RIGHT;
 	      } else {
@@ -438,8 +428,7 @@ Action Agent::getFirstMove (stage* state)
 Action Agent::getMove (Location& startLocation, Orientation& startOrientation,
 			Location& goalLocation, Orientation& goalOrientation)
 {
-  // DEBUG
-  cout << "NAVIGATING from (" << startLocation.X << "," << startLocation.Y << ") to ("
+  cout << "moving: (" << startLocation.X << "," << startLocation.Y << ")->("
        << goalLocation.X << "," << goalLocation.Y << ")\n";
 
   stage* initialState = new stage (startLocation, startOrientation, 0, NULL, CLIMB);
@@ -555,7 +544,7 @@ stage* Agent::getChildState (stage* state, Action action)
 	case LEFT: x--; break;
 	case RIGHT: x++; break;
 	}
-      if ((x >= 1) && (x <= DIMENSION) && (y >= 1) && (y <= DIMENSION) && (worldEnvironment[x][y].safe == YES))
+      if ((x >= 1) && (x <= DIMENSION) && (y >= 1) && (y <= DIMENSION) && (site[x][y].safe == YES))
 	{
 	  newLocation.X = x;
 	  newLocation.Y = y;
@@ -565,7 +554,3 @@ stage* Agent::getChildState (stage* state, Action action)
   return childState;
 }
 
-int Agent::getDistance (Location& l1, Location& l2)
-{
-  return (abs (l1.X - l2.X) + abs (l1.Y - l2.Y));
-}
