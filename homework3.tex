@@ -1,0 +1,194 @@
+\documentclass[12pt]{article}
+\renewcommand*{\familydefault}{\sfdefault}
+\usepackage{listings}
+\usepackage{amsmath}
+\usepackage{fullpage}
+\usepackage{tabularx}
+\usepackage{graphicx}
+\begin{document}
+\title{CS540 Artificial Intelligence Homework 3}
+\author{Yuchen Hou}
+\maketitle
+
+\section{Propositional logic}
+\subsection{}
+\begin{align*}
+  r1: \neg likeRA \\
+  r2: \neg likeRC \\
+  r3: \neg likeDA \\
+  r4: \neg likeDT \\
+  r5: \neg likeBC \\
+  r6: \neg likeDC
+\end{align*}
+\subsection{}
+\begin{align*}
+  \neg likeBC \land \neg likeRC \land \neg likeDC \implies likeJC \\
+  r7: likeBC \lor likeRC \lor likeDC \lor likeJC
+\end{align*}
+\subsection{}
+Add $\neg likeJC$ to KB and find empty clause:
+\begin{align*}
+  &r8: \neg likeJC \\
+  &resolve(r7,r8): \\
+  &r9: likeBC \lor likeRC \lor likeDC \\
+  &resolve(r9,r5): \\
+  &r10: likeRC \lor likeDC \\
+  &resolve(r10,r6): \\
+  &r11: likeRC \\
+  &resolve(r11,r2): \\
+  &r12: empty clause!
+\end{align*}
+so likeJC is true.
+\subsection{}
+Add to KB the previous clause and a clause similar to r7 and a implicit rule.
+\begin{align*}
+  &r13: likeJC \\
+  &r14: likeBA \lor likeRA \lor likeDA \lor likeJA \\
+  &r15: \neg likeJC \lor \neg likeJA
+\end{align*}
+Add $\neg likeBA$ to KB and find empty clause:
+\begin{align*}
+  &r16: \neg likeBA \\
+  &resolve(r15, r14) \\
+  &r17: likeRA \lor likeDA \lor likeJA \\
+  &resolve(r16, r1) \\
+  &r18: likeDA \lor likeJA \\
+  &resolve(r18, r3) \\
+  &r19: likeJA \\
+  &resolve(r15, r13) \\
+  &r20: \neg likeJA \\
+  &resolve(r19, r20) \\
+  &r21: empty clause!
+\end{align*}
+so likeBA is true.
+\subsection{}
+Add new knowledge to KB, using similar technique:
+\begin{align*}
+  &r22: likeBA \\
+  &r23: likeBT \lor likeRT \lor likeDT \lor likeJT \\
+  &r24: \neg likeBT \\
+  &r25: \neg likeJT
+\end{align*}
+Add $\neg likeRT$ and find empty clause:
+\begin{align*}
+  &resolve(r25, r23) \\
+  &r26: likeBT \lor likeRT \lor likeDT \\
+  &resolve(r26, r24) \\
+  &r27: likeRT \lor likeDT \\
+  &r28: \neg likeRT \\
+  &resolve(r27, r28) \\
+  &r29: likeDT \\
+  &resolve(r29, r4) \\
+  &r30: empty clause!
+\end{align*}
+so likeRT is true.
+\subsection{}
+Add new knowledge to KB using similar technique:
+\begin{align*}
+  &r31 likeRT \\
+  &r32 \neg likeRP (likeRT) \\
+  &r33 \neg likeBP (likeBA) \\
+  &r34 \neg likeJP (likeJC)\\
+  &r35: likeBP \lor likeRP \lor likeDP \lor likeJP \\
+\end{align*}
+Add $\neg likeDP$ and find empty clause:
+\begin{align*}
+  &r36: \neg likeDP \\
+  &resolve(r32, r36) \\
+  &r37: likeBP \lor likeDP \lor likeJP \\
+  &resolve(r33, r37) \\
+  &r38: likeDP \lor likeJP \\
+  &resolve(r34, r38) \\
+  &r39: likeDP \\
+  &resolve(r36, r39) \\
+  &r39: empty clause! \\
+\end{align*}
+so likeDP is true.
+\section{First order logic}
+\subsection{}
+\begin{align*}
+  r1: \neg like(R,A) \\
+  r2: \neg like(R,C) \\
+  r3: \neg like(D,A) \\
+  r4: \neg like(D,T) \\
+  r5: \neg like(B,C) \\
+  r6: \neg like(D,C) \\
+\end{align*}
+\subsection{}
+p: person; g: game;
+\begin{align*}
+  \forall g \; \neg like(B,g) \land \neg like(R,g) \land \neg like(D,g) \implies like(J,g) \\
+  r7: \forall g \; like(B,g) \lor like(R,g) \lor like(D,g) \lor like(J,g) \\
+\end{align*}
+\subsection{}
+In the following sections, I will use a shorthand format of proof: \\
+sentenceID:(resolvent1, resolvent2, \{substitution\})resultingClause. \\
+Add $\neg like(J,C)$ and find empty clause.
+\begin{align*}
+  &r8: \neg like(J,C) \\
+  &r9: (r7,\{g/C\}) like(B,C) \lor like(R,C) \lor like(D,C) \lor like(J,C) \\
+  &r10: (r9,r2) like(B,C) \lor like(D,C) \lor like(J,C) \\
+  &r11: (r10,r5) like(D,C) \lor like(J,C) \\
+  &r12: (r11,r6) like(J,C) \\
+  &r13: (r12,r8) empty clause! \\
+\end{align*}
+so like(J,C) is true.
+\subsection{}
+\begin{align*}
+  \forall p,g1,g2 \; like(p,g1) \land g1 \neq g2 \implies \neg like(p,g2) \\
+  r14: \forall p,g1,g2 \; \neg like(p,g1) \lor g1 = g2 \lor \neg like(p,g2) \\
+\end{align*}
+\subsection{}
+Tell KB the following information:
+\begin{align*}
+  r15: A \neq C \\
+  r16: A \neq P \\
+  r17: A \neq T \\
+  r18: C \neq A \\
+  r19: C \neq P \\
+  r20: C \neq T \\
+  r21: P \neq A \\
+  r22: P \neq C \\
+  r23: P \neq T \\
+  r24: T \neq A \\
+  r25: T \neq C \\
+  r26: T \neq P \\
+  r27: like(J,C) \\
+\end{align*}
+Add $ \neg like(B,A)$ and find empty clause.
+\begin{align*}
+  &r28: \neg like(B,A) \\
+  &r29: (r14,\{p/J, g1/C, g2/A\}) \neg like(J,C) \lor C = A \lor \neg like(J,A) \\
+  &r30: (r29, r27, r18) \neg like(J,A) \\
+  &r31: (r7, \{g/A\}, r1, r3, r30 r28) empty clause! \\
+\end{align*}
+So like(B,A) is true.
+\begin{align*}
+  r32: like(B,A) \\
+\end{align*}
+\subsection{}
+Add $ \neg like(R,T) $ and find empty clause.
+\begin{align*}
+  &r33: \neg like(R,T) \\
+  &r34: (r14,\{p/J, g1/C, g2/T\}, r27, r20) \neg like(J,T) \\
+  &r35: (r14,\{p/B, g1/A, g2/T\}, r32, r17) \neg like(B,T) \\
+  &r36: (r7,\{g/T\}, r35, r34, r33, r4) empty clause! \\
+\end{align*}
+So like(R,T) is true.
+\begin{align*}
+  r37: like(R,T) \\
+\end{align*}
+\subsection{}
+Add $ \neg like(D,P)$ and find empty clause.
+\begin{align*}
+  &r38: \neg like(D,P) \\
+  &r39: (r14,\{p/J, g1/C, g2/P\}, r27, r19) \neg like(J,P) \\
+  &r40: (r14,\{p/B, g1/A, g2/P\}, r32, r16) \neg like(B,P) \\
+  &r41: (r14,\{p/R, g1/T, g2/P\}, r37, r26) \neg like(R,P) \\
+  &r42: (r7,\{g/P\}, r38, r39, r40, r41) empty clause! \\
+\end{align*}
+so like(D,P) is true.
+\begin{align*}
+  r43: like(D,P)
+\end{align*}
+\end{document}
