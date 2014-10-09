@@ -57,7 +57,7 @@ class Agent
   void updateCoordinate (Percept&percept);
   void updateKnowledgeBase (Percept& percept);
   void locateWumpus ();
-  void locatePits ();
+  void updatePitMap ();
   Action getNextAction (Percept& percept);
   Action getFirstMove (stage* state);
   Action getMove (Location& startLocation, Orientation& startOrientation, Location& goalLocation, Orientation& goalOrientation);
