@@ -95,111 +95,12 @@ void Agent::updateKnowledgeBase (Percept& percept)
       }
     }
   }
-  updatePitMap();
+  searchFor(PIT);
   if (wumpusAlive && !wumpusLocated) {
-    locateWumpus();
+    searchFor(WUMPUS);
   }
 }
 
-void Agent::updatePitMap () {
-  int x, y;
-  int suspectPitCount = 4;
-  Location suspectPitLocation;
-  element entity = PIT;
-  entity = PIT;
-  for (x = 1; x <= DIMENSION; x++) {
-    for (y = 1; y <= DIMENSION; y++) {
-      if (site[x][y].breeze == YES) {
-	if ((x == 1) || (site[x-1][y].has(PIT) == NO)) {
-	  suspectPitCount--;
-	}
-	else {
-	  suspectPitLocation.X = x-1;
-	  suspectPitLocation.Y = y;
-	}
-	if ((x == DIMENSION) || (site[x+1][y].has(PIT) == NO)) {
-	  suspectPitCount--;
-	}
-	else {
-	  suspectPitLocation.X = x+1;
-	  suspectPitLocation.Y = y;
-	}
-	if ((y == 1) || (site[x][y-1].has(PIT) == NO)) {
-	  suspectPitCount--;
-	}
-	else {
-	  suspectPitLocation.X = x;
-	  suspectPitLocation.Y = y-1;
-	}
-	if ((y == DIMENSION) || (site[x][y+1].has(PIT) == NO)) {
-	  suspectPitCount--;
-	}
-	else {
-	  suspectPitLocation.X = x;
-	  suspectPitLocation.Y = y+1;
-	}
-	if ((suspectPitCount == 1) && (site[suspectPitLocation.X][suspectPitLocation.Y].has(PIT) == UNKNOWN))
-	  {
-	    cout << "pit located at (" << suspectPitLocation.X << "," << suspectPitLocation.Y << ")\n";
-	    site[suspectPitLocation.X][suspectPitLocation.Y].has(PIT) = YES;
-	    site[suspectPitLocation.X][suspectPitLocation.Y].safe = NO;
-	  }
-      }
-    }
-  }
-}
-void Agent::locateWumpus () {
-  int x, y;
-  int suspectwumpusCount = 4;
-  Location suspectWumpusLocation;
-  for (x = 1; x <= DIMENSION; x++) {
-    for (y = 1; y <= DIMENSION; y++) {
-      if (site[x][y].stench == YES) {
-	if ((y == DIMENSION) || (site[x][y+1].wumpus == NO)) {
-	  suspectwumpusCount--;
-	}
-	else {
-	  suspectWumpusLocation.X = x;
-	  suspectWumpusLocation.Y = y+1;
-	}
-	if ((y == 1) || (site[x][y-1].wumpus == NO)) {
-	  suspectwumpusCount--;
-	}
-	else {
-	  suspectWumpusLocation.X = x;
-	  suspectWumpusLocation.Y = y-1;
-	}
-	if ((x == 1) || (site[x-1][y].wumpus == NO)) {
-	  suspectwumpusCount--;
-	}
-	else {
-	  suspectWumpusLocation.X = x-1;
-	  suspectWumpusLocation.Y = y;
-	}
-	if ((x == DIMENSION) || (site[x+1][y].wumpus == NO)) {
-	  suspectwumpusCount--;
-	}
-	else {
-	  suspectWumpusLocation.X = x+1;
-	  suspectWumpusLocation.Y = y;
-	}
-	if (suspectwumpusCount == 1) {
-	  wumpusLocated = true;
-	  cout << "wumpus located at (" << suspectWumpusLocation.X << "," << suspectWumpusLocation.Y << ")\n";
-	  for (int x = 1; x <= DIMENSION; x++) {
-	    for (int y = 1; y <= DIMENSION; y++) {
-	      site[x][y].wumpus = NO;
-	    }
-	  }
-	  Agent::wumpusLocation = suspectWumpusLocation;
-	  site[suspectWumpusLocation.X][suspectWumpusLocation.Y].wumpus = YES;
-	  site[suspectWumpusLocation.X][suspectWumpusLocation.Y].safe = NO;
-	  return;
-	}
-      }
-    }
-  }
-}
 
 Action Agent::getNextAction (Percept& percept)
 {
@@ -242,6 +143,65 @@ Action Agent::getNextAction (Percept& percept)
     action = getMove (agentLocation, agentOrientation, location11, goalOrientation);
   }
   return action;
+}
+void Agent::searchFor (element entity) {
+  int x, y;
+  int suspectEntityCount = 4;
+  Location suspectEntityLocation;
+  for (x = 1; x <= DIMENSION; x++) {
+    for (y = 1; y <= DIMENSION; y++) {
+      bool spotNeedsCheck;
+      switch (entity) {
+      case PIT: spotNeedsCheck = (site[x][y].breeze == YES); break;
+      case WUMPUS: spotNeedsCheck = (site[x][y].stench == YES); break;
+      default: assert(false);
+      }
+      if (spotNeedsCheck) {
+	if ((x == 1) || (site[x-1][y].has(entity) == NO)) {
+	  suspectEntityCount--;
+	}
+	else {
+	  suspectEntityLocation.X = x-1;
+	  suspectEntityLocation.Y = y;
+	}
+	if ((x == DIMENSION) || (site[x+1][y].has(entity) == NO)) {
+	  suspectEntityCount--;
+	}
+	else {
+	  suspectEntityLocation.X = x+1;
+	  suspectEntityLocation.Y = y;
+	}
+	if ((y == 1) || (site[x][y-1].has(entity) == NO)) {
+	  suspectEntityCount--;
+	}
+	else {
+	  suspectEntityLocation.X = x;
+	  suspectEntityLocation.Y = y-1;
+	}
+	if ((y == DIMENSION) || (site[x][y+1].has(entity) == NO)) {
+	  suspectEntityCount--;
+	}
+	else {
+	  suspectEntityLocation.X = x;
+	  suspectEntityLocation.Y = y+1;
+	}
+	if (suspectEntityCount == 1) {
+	  cout << entity << " located at (" << suspectEntityLocation.X << "," << suspectEntityLocation.Y << ")\n";
+	  if (entity == WUMPUS) {
+	    wumpusLocated = true;
+	    for (int x = 1; x <= DIMENSION; x++) {
+	      for (int y = 1; y <= DIMENSION; y++) {
+		site[x][y].wumpus = NO;
+	      }
+	      wumpusLocation = suspectEntityLocation;
+	    }
+	  }
+	  site[suspectEntityLocation.X][suspectEntityLocation.Y].has(entity) = YES;
+	  site[suspectEntityLocation.X][suspectEntityLocation.Y].safe = NO;
+	}
+      }
+    }
+  }
 }
 
 bool Agent::getSafeLocation (Location& location)
@@ -296,125 +256,6 @@ bool Agent::getRiskyLocation (Location& location)
     }
   }
   return found;
-}
-
-bool Agent::getShootingPosition (Location& location, Orientation& orientation) {
-  int x, y;
-  bool found = false;
-
-  if (! (wumpusLocation == Location(0,0))) {
-    for (x = 1; x <= DIMENSION; x++) {
-      for (y = 1; y <= DIMENSION; y++) {
-	if ((! found) && (site[x][y].safe == YES) &&
-	    ((x == wumpusLocation.X) || (y == wumpusLocation.Y))) {
-	  found = true;
-	  location.X = x;
-	  location.Y = y;
-	}
-      }
-    }
-    if (found) {
-      if (location.X == wumpusLocation.X) {
-	if (location.Y < wumpusLocation.Y) {
-	  orientation = UP;
-	}
-	else {
-	  orientation = DOWN;
-	}
-      }
-      else {
-	if (location.X < wumpusLocation.X) {
-	  orientation = RIGHT;
-	}
-	else {
-	  orientation = LEFT;
-	}
-      }
-    }
-  }
-  return found;
-}
-
-Action Agent::getFirstMove (stage* state) {
-  Action action = CLIMB;
-  while (state->parent != NULL) {
-    action = state->action;
-    state = state->parent;
-  }
-  return action;
-}
-
-Action Agent::getMove (Location& startLocation, Orientation& startOrientation,
-		       Location& goalLocation, Orientation& goalOrientation) {
-  cout << "moving: (" << startLocation.X << "," << startLocation.Y << ")->("
-       << goalLocation.X << "," << goalLocation.Y << ")\n";
-  stage* initialState = new stage (startLocation, startOrientation, 0, NULL, CLIMB);
-  stage* goalState = new stage (goalLocation, goalOrientation, 0, NULL, CLIMB);
-  stage* finalState = iterativeDeepeningSearch (initialState, goalState);
-  stage* tmpState;
-  Action action = getFirstMove (finalState);
-  while (finalState != NULL) {
-    tmpState = finalState;
-    finalState = finalState->parent;
-    delete tmpState;
-  }
-  delete goalState;
-  return action;
-}
-
-stage* Agent::iterativeDeepeningSearch (stage* initialState, stage* goalState)
-{
-  int depthLimit = getDistance (initialState->location, goalState->location);
-  stage* finalState = NULL;
-
-  while (finalState == NULL) {
-    finalState = depthLimitedSearch (initialState, goalState, depthLimit);
-    depthLimit++;
-  }
-  return finalState;
-}
-
-stage* Agent::depthLimitedSearch (stage* state, stage* goalState, int depthLimit)
-{
-  stage* childState;
-  stage* resultState;
-
-  if (goalTest (state, goalState)) {
-    return state;
-  }
-  if (state->depth < depthLimit) {
-    childState = getChildState (state, FORWARD);
-    if (childState != NULL) {
-      resultState = depthLimitedSearch (childState, goalState, depthLimit);
-      if (resultState != NULL)
-	return resultState;
-      else
-	delete childState;
-    }
-    childState = getChildState (state, TURNLEFT);
-    resultState = depthLimitedSearch (childState, goalState, depthLimit);
-    if (resultState != NULL)
-      return resultState;
-    else
-      delete childState;
-    childState = getChildState (state, TURNRIGHT);
-    resultState = depthLimitedSearch (childState, goalState, depthLimit);
-    if (resultState != NULL)
-      return resultState;
-    else
-      delete childState;
-  }
-  return NULL;
-}
-
-bool Agent::goalTest (stage* state, stage* goalState)
-{
-  if ((state->location.X == goalState->location.X) &&
-      (state->location.Y == goalState->location.Y) &&
-      (state->orientation == goalState->orientation))
-    return true;
-  else
-    return false;
 }
 
 stage* Agent::getChildState (stage* state, Action action) {
@@ -489,3 +330,123 @@ void Agent::updateCoordinate (Percept & percept) {
     }
   }
 }
+
+stage* Agent::iterativeDeepeningSearch (stage* initialState, stage* goalState)
+{
+  int depthLimit = getDistance (initialState->location, goalState->location);
+  stage* finalState = NULL;
+
+  while (finalState == NULL) {
+    finalState = depthLimitedSearch (initialState, goalState, depthLimit);
+    depthLimit++;
+  }
+  return finalState;
+}
+
+stage* Agent::depthLimitedSearch (stage* state, stage* goalState, int depthLimit)
+{
+  stage* childState;
+  stage* resultState;
+
+  if (goalTest (state, goalState)) {
+    return state;
+  }
+  if (state->depth < depthLimit) {
+    childState = getChildState (state, FORWARD);
+    if (childState != NULL) {
+      resultState = depthLimitedSearch (childState, goalState, depthLimit);
+      if (resultState != NULL)
+	return resultState;
+      else
+	delete childState;
+    }
+    childState = getChildState (state, TURNLEFT);
+    resultState = depthLimitedSearch (childState, goalState, depthLimit);
+    if (resultState != NULL)
+      return resultState;
+    else
+      delete childState;
+    childState = getChildState (state, TURNRIGHT);
+    resultState = depthLimitedSearch (childState, goalState, depthLimit);
+    if (resultState != NULL)
+      return resultState;
+    else
+      delete childState;
+  }
+  return NULL;
+}
+
+bool Agent::getShootingPosition (Location& location, Orientation& orientation) {
+  int x, y;
+  bool found = false;
+
+  if (! (wumpusLocation == Location(0,0))) {
+    for (x = 1; x <= DIMENSION; x++) {
+      for (y = 1; y <= DIMENSION; y++) {
+	if ((! found) && (site[x][y].safe == YES) &&
+	    ((x == wumpusLocation.X) || (y == wumpusLocation.Y))) {
+	  found = true;
+	  location.X = x;
+	  location.Y = y;
+	}
+      }
+    }
+    if (found) {
+      if (location.X == wumpusLocation.X) {
+	if (location.Y < wumpusLocation.Y) {
+	  orientation = UP;
+	}
+	else {
+	  orientation = DOWN;
+	}
+      }
+      else {
+	if (location.X < wumpusLocation.X) {
+	  orientation = RIGHT;
+	}
+	else {
+	  orientation = LEFT;
+	}
+      }
+    }
+  }
+  return found;
+}
+
+Action Agent::getFirstMove (stage* state) {
+  Action action = CLIMB;
+  while (state->parent != NULL) {
+    action = state->action;
+    state = state->parent;
+  }
+  return action;
+}
+
+Action Agent::getMove (Location& startLocation, Orientation& startOrientation,
+		       Location& goalLocation, Orientation& goalOrientation) {
+  cout << "moving: (" << startLocation.X << "," << startLocation.Y << ")->("
+       << goalLocation.X << "," << goalLocation.Y << ")\n";
+  stage* initialState = new stage (startLocation, startOrientation, 0, NULL, CLIMB);
+  stage* goalState = new stage (goalLocation, goalOrientation, 0, NULL, CLIMB);
+  stage* finalState = iterativeDeepeningSearch (initialState, goalState);
+  stage* tmpState;
+  Action action = getFirstMove (finalState);
+  while (finalState != NULL) {
+    tmpState = finalState;
+    finalState = finalState->parent;
+    delete tmpState;
+  }
+  delete goalState;
+  return action;
+}
+
+bool Agent::goalTest (stage* state, stage* goalState)
+{
+  if ((state->location.X == goalState->location.X) &&
+      (state->location.Y == goalState->location.Y) &&
+      (state->orientation == goalState->orientation))
+    return true;
+  else
+    return false;
+}
+

@@ -60,8 +60,7 @@ class Agent
   void GameOver (int score);
   void updateCoordinate (Percept&percept);
   void updateKnowledgeBase (Percept& percept);
-  void locateWumpus ();
-  void updatePitMap ();
+  void searchFor (element entity);
   Action getNextAction (Percept& percept);
   Action getFirstMove (stage* state);
   Action getMove (Location& startLocation, Orientation& startOrientation, Location& goalLocation, Orientation& goalOrientation);
