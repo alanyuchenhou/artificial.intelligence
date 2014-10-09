@@ -11,8 +11,15 @@ Agent::~Agent ()
 {
 }
 
-void Agent::Initialize ()
-{
+feature & room::has (element entity) {
+  switch (entity) {
+  case WUMPUS: return wumpus;
+  case PIT: return pit;
+  default: assert(false);
+  }
+  return pit;
+}
+void Agent::Initialize () {
   agentLocation = Location(1,1);
   agentOrientation = RIGHT;
   agentHasGold = false;
@@ -98,42 +105,43 @@ void Agent::updatePitMap () {
   int x, y;
   int suspectPitCount = 4;
   Location suspectPitLocation;
-
+  element entity = PIT;
+  entity = PIT;
   for (x = 1; x <= DIMENSION; x++) {
     for (y = 1; y <= DIMENSION; y++) {
       if (site[x][y].breeze == YES) {
-	if ((x == 1) || (site[x-1][y].pit == NO)) {
+	if ((x == 1) || (site[x-1][y].has(PIT) == NO)) {
 	  suspectPitCount--;
 	}
 	else {
 	  suspectPitLocation.X = x-1;
 	  suspectPitLocation.Y = y;
 	}
-	if ((x == DIMENSION) || (site[x+1][y].pit == NO)) {
+	if ((x == DIMENSION) || (site[x+1][y].has(PIT) == NO)) {
 	  suspectPitCount--;
 	}
 	else {
 	  suspectPitLocation.X = x+1;
 	  suspectPitLocation.Y = y;
 	}
-	if ((y == 1) || (site[x][y-1].pit == NO)) {
+	if ((y == 1) || (site[x][y-1].has(PIT) == NO)) {
 	  suspectPitCount--;
 	}
 	else {
 	  suspectPitLocation.X = x;
 	  suspectPitLocation.Y = y-1;
 	}
-	if ((y == DIMENSION) || (site[x][y+1].pit == NO)) {
+	if ((y == DIMENSION) || (site[x][y+1].has(PIT) == NO)) {
 	  suspectPitCount--;
 	}
 	else {
 	  suspectPitLocation.X = x;
 	  suspectPitLocation.Y = y+1;
 	}
-	if ((suspectPitCount == 1) && (site[suspectPitLocation.X][suspectPitLocation.Y].pit == UNKNOWN))
+	if ((suspectPitCount == 1) && (site[suspectPitLocation.X][suspectPitLocation.Y].has(PIT) == UNKNOWN))
 	  {
 	    cout << "pit located at (" << suspectPitLocation.X << "," << suspectPitLocation.Y << ")\n";
-	    site[suspectPitLocation.X][suspectPitLocation.Y].pit = YES;
+	    site[suspectPitLocation.X][suspectPitLocation.Y].has(PIT) = YES;
 	    site[suspectPitLocation.X][suspectPitLocation.Y].safe = NO;
 	  }
       }
@@ -144,61 +152,53 @@ void Agent::locateWumpus () {
   int x, y;
   int suspectwumpusCount = 4;
   Location suspectWumpusLocation;
-  for (x = 1; x <= DIMENSION; x++)
-    {
-      for (y = 1; y <= DIMENSION; y++)
-	{
-	  if (site[x][y].stench == YES)
-	    {
-	      if ((y == DIMENSION) || (site[x][y+1].wumpus == NO))
-		{
-		  suspectwumpusCount--;
-		}
-	      else {
-		suspectWumpusLocation.X = x;
-		suspectWumpusLocation.Y = y+1;
-	      }
-	      if ((y == 1) || (site[x][y-1].wumpus == NO))
-		{
-		  suspectwumpusCount--;
-		}
-	      else {
-		suspectWumpusLocation.X = x;
-		suspectWumpusLocation.Y = y-1;
-	      }
-	      if ((x == 1) || (site[x-1][y].wumpus == NO))
-		{
-		  suspectwumpusCount--;
-		}
-	      else {
-		suspectWumpusLocation.X = x-1;
-		suspectWumpusLocation.Y = y;
-	      }
-	      if ((x == DIMENSION) || (site[x+1][y].wumpus == NO))
-		{
-		  suspectwumpusCount--;
-		}
-	      else {
-		suspectWumpusLocation.X = x+1;
-		suspectWumpusLocation.Y = y;
-	      }
-	      if (suspectwumpusCount == 1)
-		{
-		  wumpusLocated = true;
-		  cout << "wumpus at (" << suspectWumpusLocation.X << "," << suspectWumpusLocation.Y << ")\n";
-		  Agent::wumpusLocation = suspectWumpusLocation;
-		  for (int x = 1; x <= DIMENSION; x++) {
-		    for (int y = 1; y <= DIMENSION; y++) {
-		      site[x][y].wumpus = NO;
-		    }
-		  }
-		  site[suspectWumpusLocation.X][suspectWumpusLocation.Y].wumpus = YES;
-		  site[suspectWumpusLocation.X][suspectWumpusLocation.Y].safe = NO;
-		  return;
-		}
-	    }
+  for (x = 1; x <= DIMENSION; x++) {
+    for (y = 1; y <= DIMENSION; y++) {
+      if (site[x][y].stench == YES) {
+	if ((y == DIMENSION) || (site[x][y+1].wumpus == NO)) {
+	  suspectwumpusCount--;
 	}
+	else {
+	  suspectWumpusLocation.X = x;
+	  suspectWumpusLocation.Y = y+1;
+	}
+	if ((y == 1) || (site[x][y-1].wumpus == NO)) {
+	  suspectwumpusCount--;
+	}
+	else {
+	  suspectWumpusLocation.X = x;
+	  suspectWumpusLocation.Y = y-1;
+	}
+	if ((x == 1) || (site[x-1][y].wumpus == NO)) {
+	  suspectwumpusCount--;
+	}
+	else {
+	  suspectWumpusLocation.X = x-1;
+	  suspectWumpusLocation.Y = y;
+	}
+	if ((x == DIMENSION) || (site[x+1][y].wumpus == NO)) {
+	  suspectwumpusCount--;
+	}
+	else {
+	  suspectWumpusLocation.X = x+1;
+	  suspectWumpusLocation.Y = y;
+	}
+	if (suspectwumpusCount == 1) {
+	  wumpusLocated = true;
+	  cout << "wumpus located at (" << suspectWumpusLocation.X << "," << suspectWumpusLocation.Y << ")\n";
+	  for (int x = 1; x <= DIMENSION; x++) {
+	    for (int y = 1; y <= DIMENSION; y++) {
+	      site[x][y].wumpus = NO;
+	    }
+	  }
+	  Agent::wumpusLocation = suspectWumpusLocation;
+	  site[suspectWumpusLocation.X][suspectWumpusLocation.Y].wumpus = YES;
+	  site[suspectWumpusLocation.X][suspectWumpusLocation.Y].safe = NO;
+	  return;
+	}
+      }
     }
+  }
 }
 
 Action Agent::getNextAction (Percept& percept)

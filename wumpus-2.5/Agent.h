@@ -2,6 +2,7 @@
 #define AGENT_H
 #define DIMENSION 4
 #include <cstdlib>
+#include <cassert>
 #include <iostream>
 #include <list>
 #include <map>
@@ -15,10 +16,13 @@
 #include "Percept.h"
 #include "WorldState.h"
 
+enum element {WUMPUS, PIT};
+
 enum feature {YES, NO, UNKNOWN};
 class room
 {
  public:
+  feature & has (element entity);
   bool visited;
   feature wumpus;
   feature pit;
