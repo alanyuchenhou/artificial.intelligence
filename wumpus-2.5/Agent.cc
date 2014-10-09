@@ -1,5 +1,4 @@
-// I received help from my friends Xiyu Xie and Prabal Poudel.
-// The help I received from them includes both algorithm and data structure design.
+// I received help from my friends Xiyu Xie and Prabal Poudel, and my professor Larry Holder
 #include "Agent.h"
 using namespace std;
 
@@ -186,7 +185,8 @@ void Agent::searchFor (element entity) {
 	  suspectEntityLocation.Y = y+1;
 	}
 	if (suspectEntityCount == 1) {
-	  cout << entity << " located at (" << suspectEntityLocation.X << "," << suspectEntityLocation.Y << ")\n";
+	  cout << entity << " located at ("
+	       << suspectEntityLocation.X << "," << suspectEntityLocation.Y << ")\n";
 	  if (entity == WUMPUS) {
 	    wumpusLocated = true;
 	    for (int x = 1; x <= DIMENSION; x++) {
