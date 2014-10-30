@@ -1,0 +1,265 @@
+\documentclass[12pt]{article}
+\renewcommand*{\familydefault}{\sfdefault}
+\usepackage{listings}
+\usepackage{amsmath}
+\usepackage{fullpage}
+\usepackage{tabularx}
+\usepackage{graphicx}
+
+\begin{document}
+\title{CS540 Artificial Intelligence Homework 4}
+\author{Yuchen Hou}
+\maketitle
+
+\section{Inference using full joint distributions}
+\subsection{a}
+P(Likes=ture) = .02+.08+.05+.06+.1+.04+.2+.02 = 0.57 \\
+P(Likes=false) = .1+.02+.06+.06+.04+.06+.01+.08 = 0.43
+\subsection{b}
+P(Likes=false,Personality=typeA) = .1+.06+.04+.01 = 0.21
+\subsection{c}
+P(Likes=true,Personality=typeB,Game=centipede) = .02
+\subsection{d}
+P(Likes=true $|$ Personality=typeA)\\
+= P(Likes=true,Personality=typeA)/P(Personality=typeA)\\
+= (.02+.05+.1+.2)/(.02+.05+.1+.2+.1+.06+.04+.01)\\
+= 0.63793103448
+\subsection{e}
+P(Likes=true $|$ Game=checkers)\\
+= P(Likes=true, Game=checkers) / P(Game=checkers)\\
+= (.02+.08)/(.02+.08+1+.02)\\
+= 0.08928571428
+\subsection{f}
+P(Likes=true $|$ Personality=typeB, Game=checkers)\\
+= P(Likes=true, Personality=typeB, Game=checkers) / P(Personality=typeB, Game=checkers)\\
+= (.08) / (.02+.08)\\
+= 0.8
+\subsection{g}
+P(Personality=typeA $|$ Game=starcraft)\\
+= P(Personality=typeA, Game=starcraft) / P(Game=starcraft)\\
+= (.05+.06) / (.05+.06+.06+.06)\\
+= 0.47826086956
+
+\section{Bayes rule: conditional independence}
+\subsection{a}
+P(Personality=typeA $|$ Game=starcraft, Likes=false)\\
+= P(Personality=typeA $|$ Game=starcraft)\\
+= 0.47826086956
+\subsection{b}
+P(Likes=true $|$ Personality=typeB, Game=checkers)\\
+= P(Likes=true $|$ Game=checkers)\\
+= 0.08928571428
+
+\section{Bayes rule: diagnostic to causal}
+P(Personality=typeA) = .4\\
+P(Personality=typeB) = .6\\
+P(Test=typeA $|$ Personality=typeA) = .9\\
+P(Test=typeB $|$ Personality=typeA) = .1\\
+P(Test=typeA $|$ Personality=typeB) = .2\\
+P(Test=typeB $|$ Personality=typeB) = .8
+\subsection{a}
+P(Personality $|$ Test=typeA)\\
+= 1/P(Test=typeA) P(Personality) P(Test=typeA $|$ Personality)\\
+= 1/P(Test=typeA) $<$P(Personality=typeA) P(Test=typeA $|$ Personality=typeA),\\
+P(Personality=typeB) P(Test=typeA $|$ Personality=typeB)$>$\\
+= 1/P(Test=typeA) $<$.4*.9, .6*.2$>$\\
+= 1/P(Test=typeA) $<$.36, .12$>$\\
+P(Test=typeA) = .36+.12 = .48\\
+P(Personality $|$ Test=typeA)\\
+= $<$0.75, 0.25$>$
+\subsection{b}
+P(Personality $|$ Test=typeB)\\
+= 1/P(Test=typeB) P(Personality) P(Test=typeB $|$ Personality)\\
+= 1/P(Test=typeB) $<$P(Personality=typeA) P(Test=typeB $|$ Personality=typeA),\\
+P(Personality=typeB) P(Test=typeB $|$ Personality=typeB)$>$\\
+= 1/P(Test=typeB) $<$.4*.1, .6*.8$>$\\
+= 1/P(Test=typeB) $<$.04, .48$>$\\
+P(Test=typeB) = .04+.48 = .52\\
+P(Personality $|$ Test=typeB)\\
+= $<$0.07692307692, 0.92307692307$>$
+
+\section{The semantics of bayesian networks}
+The bayesian network is shown in Figure \ref{fig:game}.
+\begin{figure}
+  \centering
+      {\includegraphics[width=1\linewidth]{homework4.png}} \rule{1\linewidth}{1pt}
+      \caption{The bayesian network representing game marketing knowledge.}
+      \label{fig:game}
+\end{figure}
+
+\section{Exact inference in bayesian networks}
+In this section, the variables are represented by their initialls:
+\begin{description}
+  \item[G] Game
+  \item[P] Personality
+  \item[L] Likes
+  \item[B] Buy
+  \item[R] Rating
+\end{description}
+\subsection{a}
+\begin{align*}
+  P(B=true|L=true)
+  =& .3
+\end{align*}
+\subsection{b}
+\begin{align*}
+  &P(L|G=tetris,P=typeA)\\
+  =& <.3,.7> \\
+  & P(B=true|G=tetris,P=typeA)\\
+  =& \sum_l P(B=true,L=l|G=tetris,P=typeA)\\
+  =& \sum_l P(L=l|G=tetris,P=typeA) P(B=true|L=l,G=tetris,P=typeA)\\
+  =& \sum_l P(L=l|G=tetris,P=typeA) P(B=true|L=l)\\
+  =& .3*.3+.7*.1\\
+  =& 0.16
+\end{align*}
+\subsection{c}
+\subsubsection{direct approach}
+\begin{align*}
+  &P(G,P,L,B,R)=P(G=g)P(P=p)P(L=l|P=p,G=g)P(B=b|L=l)P(R=r|L=l)\\
+  &P(B=true | P=typeB, R=3)\\
+  =& \alpha \sum_l \sum_g P(G=g)P(P=typeB)P(L=l|P=typeB,G=g)P(B=true|L=l)P(R=3|L=l)\\
+  &P(B=false | P=typeB, R=3)\\
+  =& \alpha \sum_l \sum_g P(G=g)P(P=typeB)P(L=l|P=typeB,G=g)P(B=false|L=l)P(R=3|L=l)\\
+\end{align*}
+The joint distribution of every possible case is shown in Table \ref{tab:game}.
+\begin{table}
+  \centering
+  \begin{tabularx}{\textwidth}{|X|X|X|l|} \hline
+    G & L & B & P(G,P=typeB,L,B,Rating=3) \\ \hline
+    checkers & 0 & 0 & 0.00432 \\ \hline
+    checkers & 0 & 1 & 0.00048 \\ \hline
+    checkers & 1 & 0 & 0.0042 \\ \hline
+    checkers & 1 & 1 & 0.0018 \\ \hline
+    starcraft & 0 & 0 & 0.00756 \\ \hline
+    starcraft & 0 & 1 & 0.00084 \\ \hline
+    starcraft & 1 & 0 & 0.0126 \\ \hline
+    starcraft & 1 & 1 & 0.0054 \\ \hline
+    tetris & 0 & 0 & 0.01296 \\ \hline
+    tetris & 0 & 1 & 0.00144 \\ \hline
+    tetris & 1 & 0 & 0.0126 \\ \hline
+    tetris & 1 & 1 & 0.0054 \\ \hline
+    centipede & 0 & 0 & 0.01944 \\ \hline
+    centipede & 0 & 1 & 0.00216 \\ \hline
+    centipede & 1 & 0 & 0.0084 \\ \hline
+    centipede & 1 & 1 & 0.0036 \\ \hline
+  \end{tabularx}
+  \caption{P(G,P=typeB,L,B,Rating=3)}
+  \label{tab:game}
+\end{table}
+\begin{align*}
+  &P(B=false | P=typeB, R=3)\\
+  =& \alpha (0.00432+0.0042+0.00756+0.0126+0.01296+0.0126+0.01944+0.0084)\\
+  =& 0.08208 \alpha\\
+  &P(B=true | P=typeB, R=3)\\
+  =& \alpha (0.00048+0.0018+0.00084+0.0054+0.00144+0.0054+0.00216+0.0036)\\
+  =& 0.02112 \alpha\\
+  &\alpha\\
+  =& 9.68992248062\\
+  &P(B=true | P=typeB, R=3)\\
+  =&0.20465116279
+\end{align*}
+\subsubsection{simplified approach}
+\begin{align*}
+  &P(B=true | P=typeB, R=3)\\
+  =& \alpha P(P=typeB) \sum_l P(B=true|L=l)P(R=3|L=l) \sum_g P(G=g)P(L=l|P=typeB,G=g)\\
+  =& \alpha P(P=typeB) \sum_l P(B=true|L=l)P(R=3|L=l)\\
+  & \cdot <.1*.2+.2*.3+.3*.2+.4*.1,.1*.8+.2*.7+.3*.8+.4*.9>\\
+  =& \alpha P(P=typeB) \sum_l P(B=true|L=l)P(R=3|L=l) <0.18, 0.82>\\
+  =& \alpha .6* (.3*.5*.18+.1*.1*.82)\\
+  =& \alpha 0.02112\\
+  &P(B=false | P=typeB, R=3)\\
+  =& \alpha P(P=typeB) \sum_l P(B=false|L=l)P(R=3|L=l) \sum_g P(G=g)P(L=l|P=typeB,G=g)\\
+  =& \alpha P(P=typeB) \sum_l P(B=false|L=l)P(R=3|L=l)\\
+  & \cdot <.1*.2+.2*.3+.3*.2+.4*.1,.1*.8+.2*.7+.3*.8+.4*.9>\\
+  =& \alpha P(P=typeB) \sum_l P(B=false|L=l)P(R=3|L=l) <0.18, 0.82>\\
+  =& \alpha .6* (.7*.5*.18+.9*.1*.82)\\
+  =& \alpha 0.08208\\
+\end{align*}
+\begin{align*}
+  &P(B=true | P=typeB, R=3)+P(B=false | P=typeB, R=3)\\
+  =& \alpha (0.02112+0.08208)\\
+  =& \alpha 0.1032\\
+  =& 1\\
+  &\alpha = 9.68992248062\\
+  &P(B=true | P=typeB, R=3)\\
+  =& 9.68992248062*0.02112\\
+  =& 0.20465116279
+\end{align*}
+
+\section{Wumpus world}
+The bayesian network is shown in Figure \ref{fig:wumpus}.
+\begin{figure}
+  \centering
+      {\includegraphics[width=1\linewidth]{homework4_6.png}} \rule{1\linewidth}{1pt}
+      \caption{The bayesian network representing the wumpus world scenario.}
+      \label{fig:wumpus}
+\end{figure}
+The conditional probability tables are shown below and in Table \ref{tab:pb12} and Table \ref{tab:pb21}.
+\begin{align*}
+  P(p13) =& .3 \\
+  P(p22) =& .3 \\
+  P(p31) =& .3 \\
+\end{align*}
+\begin{table}
+  \centering
+  \begin{tabularx}{\textwidth}{|X|X|X|} \hline
+    P13 & P22 & P(b12$|$P13,P22) \\ \hline
+    0 & 0 & 0 \\ \hline
+    0 & 1 & 1 \\ \hline
+    1 & 0 & 1 \\ \hline
+    1 & 1 & 1 \\ \hline
+  \end{tabularx}
+  \caption{P(B12$|$P13,P22)}
+  \label{tab:pb12}
+\end{table}
+\begin{table}
+  \centering
+  \begin{tabularx}{\textwidth}{|X|X|X|} \hline
+    P22 & P31 & P(b21|P22,P31) \\ \hline
+    0 & 0 & 0 \\ \hline
+    0 & 1 & 1 \\ \hline
+    1 & 0 & 1 \\ \hline
+    1 & 1 & 1 \\ \hline
+  \end{tabularx}
+  \caption{P(B21$|$P22,P31)}
+  \label{tab:pb21}
+\end{table}
+\begin{align*}
+  P(p22=1|b12=1,b21=1)
+  =& \alpha \sum_{p13} \sum_{p31} P(p13,p22=1,p31,b12=1,b21=1)\\
+  P(p22=0|b12=1,b21=1)
+  =& \alpha \sum_{p13} \sum_{p31} P(p13,p22=0,p31,b12=1,b21=1)\\
+  P(p13,p22,p31,b12,b21)
+  =& P(p13)P(p22)P(p31)P(b12|p13,p22)P(b21|p22,p31)\\
+\end{align*}
+The joint distribution of every possible case is shown in Table \ref{tab:wumpus}.
+\begin{table}
+  \centering
+  \begin{tabularx}{\textwidth}{|X|X|X|l|} \hline
+    P13 & P22 & P31 & P(p13,p22,p31,b12=1,b21=1) \\ \hline
+    0 & 0 & 0 & 0 \\ \hline
+    0 & 0 & 1 & 0 \\ \hline
+    0 & 1 & 0 & .7*.3*.7 \\ \hline
+    0 & 1 & 1 & .7*.3*.3 \\ \hline
+    1 & 0 & 0 & 0 \\ \hline
+    1 & 0 & 1 & .3*.7*.3 \\ \hline
+    1 & 1 & 0 & .3*.3*.7 \\ \hline
+    1 & 1 & 1 & .3*.3*.3 \\ \hline
+  \end{tabularx}
+  \caption{P(p13,p22,p31,b12=1,b21=1)}
+  \label{tab:wumpus}
+\end{table}
+\begin{align*}
+  P(p22=1|b12=1,b21=1)
+  =& \alpha (.7*.3*.7+.7*.3*.3+.3*.3*.7+.3*.3*.3) \\
+  =& 0.3 \alpha \\
+  P(p22=0|b12=1,b21=1)
+  =& \alpha (.3*.7*.3) \\
+  =& 0.063 \alpha \\
+  \alpha =& 2.75482093664 \\
+  P(P22|know,b)
+  =& P(P22|b12=1,b21=1)\\
+  =& <0.82644628099,0.173553719>\\
+\end{align*}
+
+\end{document}
