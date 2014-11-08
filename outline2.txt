@@ -1,0 +1,73 @@
+CptS 440/540
+Exam II Outline
+Fall 2014
+
+Note: The following topics will be covered on the exam. The exam will be
+      closed-book and closed-notes. No computers, but you will need a
+      calculator.
+
+Logic
+- Knowledge-based agent
+- Wumpus world
+- Syntax, semantics, model, entailment, soundness, completeness
+- Propositional logic
+  - Syntax and semantics
+  - Inference, validity, satisfiability
+  - Proof by refutation
+  - Logical equivalences
+  - Inference rules
+  - Clause
+  - Conversion to CNF
+  - Unit and full resolution
+  - PL-Resolution (known algorithm, soundness, completeness, time complexity)
+  - Frame problem and frame axiom
+- First-order logic
+  - Syntax and semantics
+  - Properties of quantifiers
+  - Closed-world assumption
+  - Translate word problems to first-order logic
+- Inference in first-order logic
+  - Unification
+    - Most general unifier
+    - Unify (know algorithm, time complexity)
+  - Conversion to CNF
+  - Propositionalization
+  - Generalized Modus Ponens
+  - Forward chaining (know algorithm, soundness, completeness)
+  - Backward chaining (know algorithm, soundness, completeness)
+  - Resolution
+    - Proof by refutation (know algorithm, soundness, completeness)
+    - Strategies for efficiency
+      - Unit preference, set of support, linear resolution, subsumption
+    - Answer literal
+  - Equality using paramodulation
+
+Planning
+- Nothing on planning
+
+Uncertainty
+- Rational agent maximizes expected utility
+- Probability
+  - Axioms
+  - Unconditional (prior) or conditional (posterior)
+  - Random variable
+  - Distribution
+- Probabilistic inference (execute all below)
+  - Using full joint probability distribution
+  - Normalization
+  - Independence and conditional independence
+  - Bayes rule
+  - Naive Bayes
+
+Probabilistic Reasoning
+- Bayesian networks
+  - Definition: nodes, links, conditional probability tables
+  - Construction
+  - Polytree
+  - Exact inference (execute)
+  - Approximate inference
+    - Direct sampling
+    - Rejection sampling
+    - Likelihood weighting
+    - Markov chain sampling
+

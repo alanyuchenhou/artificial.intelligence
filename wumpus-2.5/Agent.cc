@@ -23,7 +23,7 @@ void Agent::Initialize () {
   agentOrientation = RIGHT;
   agentHasGold = false;
   wumpusAlive = true;
-  wumpusLocated = NO;
+  wumpusLocated = false;
   wumpusLocation = Location(0,0);
   previousAction = SHOOT;
   for (int x = 1; x <= DIMENSION; x++)
@@ -73,8 +73,10 @@ void Agent::updateKnowledgeBase (Percept& percept)
   site[x][y].wumpus = NO;
   site[x][y].visited = true;
   site[x][y].safe = YES;
-  if (percept.Scream)
+  if (percept.Scream) {
     wumpusAlive = false;
+    site[wumpusLocation.X][wumpusLocation.Y].safe = YES;
+  }
   if (percept.Stench)
     site[x][y].stench = YES;
   else site[x][y].stench = NO;
@@ -97,6 +99,7 @@ void Agent::updateKnowledgeBase (Percept& percept)
   searchFor(PIT);
   if (wumpusAlive && !wumpusLocated) {
     searchFor(WUMPUS);
+    printf("searching for wumpus \n");
   }
 }
 

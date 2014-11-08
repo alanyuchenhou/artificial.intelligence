@@ -1,0 +1,69 @@
+CptS 440/540
+Exam I Outline
+Fall 2014
+
+Note: The following topics will be covered on the exam. The exam will be
+      closed-book and closed-notes.
+
+Introduction
+- Definition of AI
+- Four approaches to AI: Think/Act Humanly/Rationally
+- Turing test
+- Wumpus world
+
+Agents
+- Definitions: Agent, Percept, Rational Agent
+- PEAS description of task environment
+  - Performance, Environment, Actuators, Sensors
+- Task environment properties
+  - Fully vs. partially observable
+  - Single vs. multi-agent
+  - Deterministic vs. stochastic
+  - Episodic vs. sequential
+  - Static vs. dynamic
+  - Discrete vs. continuous
+  - Known vs. unknown
+- Types of agents
+  - Reflex
+  - Model-based
+  - Goal-based
+  - Utility-based
+  - Learning (critic, learning element, problem generator)
+- Types of state representations: atomic, factored, structured
+
+Search
+- Five parts of search problem: initial state, actions, transition model,
+  goal test, path (step) cost
+- State space, search tree, search graph, path, frontier
+- Tree search vs. graph search
+- Performance: completeness, optimality, time and space complexity
+- Branching factor
+- Uninformed search (know algorithm and performance for each)
+  - Breadth-first
+  - Uniform-cost
+  - Depth-first
+  - Depth-limited
+  - Iterative deepening depth-first
+  - Bidirectional
+- Heuristic functions
+  - Admissible, consistent, triangle inequality, dominating
+  - Effective branching factor
+  - Designing good heuristics
+- Informed search (know algorithm and performance for each)
+  - Greedy best-first
+  - A*
+- State space properties
+  - Plateau, ridge, local maximum, global maximum
+- Local search (know algorithm)
+  - Hill climbing (stochastic, first choice, random-restart)
+  - Simulated annealing (schedule)
+  - Beam search (stochastic)
+  - Genetic algorithms (population, individual, fitness, crossover, mutation)
+- Adversarial search
+  - Game tree
+  - Minimax (know algorithm and complexity)
+  - Alpha-beta pruning (know algorithm)
+  - Move ordering
+  - Cutoff test, horizon effect, singular extension
+  - Stochastic games: chance nodes, ExpectiMinimax
+  - Partially-observable games
