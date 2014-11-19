@@ -4,6 +4,22 @@ using namespace std;
 
 Agent::Agent ()
 {
+  wumpusAlive = true;
+  wumpusLocated = false;
+  wumpusLocation = Location(0,0);
+  previousAction = SHOOT;
+  for (int x = 1; x <= DIMENSION; x++)
+    {
+      for (int y = 1; y <= DIMENSION; y++)
+    	{
+	  site[x][y].visited = false;
+	  site[x][y].safe = UNKNOWN;
+	  site[x][y].stench = UNKNOWN;
+	  site[x][y].breeze = UNKNOWN;
+	  site[x][y].wumpus = UNKNOWN;
+	  site[x][y].pit = UNKNOWN;
+    	}
+    }
 }
 
 Agent::~Agent ()
@@ -22,22 +38,6 @@ void Agent::Initialize () {
   agentLocation = Location(1,1);
   agentOrientation = RIGHT;
   agentHasGold = false;
-  wumpusAlive = true;
-  wumpusLocated = false;
-  wumpusLocation = Location(0,0);
-  previousAction = SHOOT;
-  for (int x = 1; x <= DIMENSION; x++)
-    {
-      for (int y = 1; y <= DIMENSION; y++)
-    	{
-	  site[x][y].visited = false;
-	  site[x][y].safe = UNKNOWN;
-	  site[x][y].stench = UNKNOWN;
-	  site[x][y].breeze = UNKNOWN;
-	  site[x][y].wumpus = UNKNOWN;
-	  site[x][y].pit = UNKNOWN;
-    	}
-    }
   site[1][1].visited = true;
   site[1][1].safe = YES;
   site[1][1].wumpus = NO;
