@@ -1,0 +1,191 @@
+\documentclass[12pt]{article}
+\renewcommand*{\familydefault}{\sfdefault}
+\usepackage{listings}
+\usepackage{amsmath}
+\usepackage{fullpage}
+\usepackage{tabularx}
+\usepackage{graphicx}
+
+\begin{document}
+\title{CS540 Artificial Intelligence Homework 6}
+\author{Yuchen Hou}
+\maketitle
+
+\section{Learning with complete data}
+The symbols used are:
+\begin{description}
+  \item[d] direction
+  \item[E] east
+  \item[W] west
+  \item[W] white
+\end{description}
+The parameters for the baysian network is calculated below:
+\begin{align*}
+  &P(d=E|cars=4,wheels=white,circles=1,cargo=3)\\
+  =& \alpha P(d=E,cars=4,wheels=white,circles=1,cargo=3)\\
+  =& \alpha P(d=E)P(cars=4,wheels=white,circles=1,cargo=3|d=E)\\
+  =& \alpha P(d=E)P(cars=4|d=E)P(wheels=white|d=E)\\
+  &P(circles=1|d=E)P(cargo=3|d=E)\\
+  =& \alpha 5/10 * 2/5 * 1/5 * 3/5 * 4/5\\
+  =& \alpha 0.0192\\
+  &P(d=W|cars=4,wheels=white,circles=1,cargo=3)\\
+  =& \alpha P(d=W,cars=4,wheels=white,circles=1,cargo=3)\\
+  =& \alpha P(d=W)P(cars=4,wheels=white,circles=1,cargo=3|d=W)\\
+  =& \alpha P(d=W)P(cars=4|d=W)P(wheels=white|d=W)\\
+  &P(circles=1|d=W)P(cargo=3|d=W)\\
+  =& \alpha 5/10 * 1/5 * 3/5 * 2/5 * 1/5\\
+  =& \alpha 0.0048\\
+  &P(d=E|cars=4,wheels=white,circles=1,cargo=3)\\
+  &> P(d=W|cars=4,wheels=white,circles=1,cargo=3)\\
+\end{align*}
+Naive Bayes classifies the instance as direction=east.
+
+\section{Nonparametric models}
+\subsection{a}
+\begin{align*}
+x=[4,white,1,3]\\
+L(x,a) = 0+1+0+1 = 2\\
+L(x,b) = 1+1+1+0 = 3\\
+L(x,c) = 1+1+0+0 = 2\\
+L(x,d) = 0+0+1+0 = 1\\
+L(x,e) = 1+1+0+0 = 2\\
+L(x,f) = 2+1+2+1 = 6\\
+L(x,g) = 1+1+0+1 = 3\\
+L(x,h) = 2+0+2+0 = 4\\
+L(x,i) = 0+0+2+0 = 2\\
+L(x,j) = 2+0+1+2 = 5\\
+\end{align*}
+\subsection{b}
+The solution depends on the implementation because there are many ties (L=2) in the distance comparison. One possible solution is as follows:\\
+nearest neighbors = (a, d);\\
+x.direction = east;
+\subsection{c}
+nearest neighbors = (a, c, d, e, i)\\
+x.direction = east;
+
+\section{Reinforcement learning}
+\subsection{Passive reinforcement learning}
+\begin{align*}
+  U(s) =& R(s) + \sum_{s1} P(s1|s,\pi(s)) U(s1)\\
+  U(3,2) =& 1 + .8*100 + 2*.1*100 = 101\\
+  \forall i \in 1, 2, 3\\
+  U(2,i) =& 1 + .8*101 + 2*.1*(-100) = 61.8\\
+  U(1,i) =& 1 + .8*61.8 + 2*.1*(61.8) = 62.8\\
+\end{align*}
+\subsection{Active reinforcement learning}
+\begin{align*}
+  Q(s,a) \gets R(s) + \max_{a1} Q(s1,a1)
+\end{align*}
+\begin{table}[htb] \centering
+  \begin{tabularx}{\textwidth}{|X|X|X|X|} \hline
+    trial & Q((1,1),upright) & Q((2,2),right) & Q((3,2),right) \\ \hline
+    0 & 0 & 0 & 0 \\ \hline
+    1 & 1 & 1 & 1 \\ \hline
+    2 & 2 & 2 & 101 \\ \hline
+    3 & 3 & 102 & 101 \\ \hline
+    4 & 103 & 102 & 101 \\ \hline
+    5 & 103 & 102 & 101 \\ \hline
+    6 & 103 & 102 & 101 \\ \hline
+    7 & 103 & 102 & 101 \\ \hline
+    8 & 103 & 102 & 101 \\ \hline
+    9 & 103 & 102 & 101 \\ \hline
+    10 & 103 & 102 & 101 \\ \hline
+  \end{tabularx}
+  \caption{Q-learning}
+  \label{tab:q}
+\end{table}
+
+\section{Language models}
+\begin{align*}
+  P(w_{1:5}) =& \prod_{i=1}^5 P(w_i|w_{i-1})\\
+  P(the|NULL) =& P(the) = 0.0768856184014\\
+  P(agent|the) =& 6.81061590963e-06\\
+  P(has|agent) =& 3.7662392127e-07\\
+  P(the|has) =& 9.74932867309e-05\\
+  P(gold|the) =& 1.59786185857e-05\\
+  P(an|has) =& 3.98802885522e-05\\
+  P(arrow|an) =& 2.39225935177e-06\\
+\end{align*}
+\subsection{a}
+\begin{align*}
+  &P(the agent has the gold)\\
+  =& 0.0768856184014*6.81061590963e-06*3.7662392127e-07\\
+  &*9.74932867309e-05*1.59786185857e-05\\
+  =& 3.0722273e-22\\
+\end{align*}
+\subsection{b}
+\begin{align*}
+  &P(the agent has an arrow)\\
+  =& 0.0768856184014*6.81061590963e-06*3.7662392127e-07\\
+  &*3.98802885522e-05*2.39225935177e-06\\
+  =& 1.8815075e-23\\
+\end{align*}
+\subsection{c}
+Phrase a is more likely.
+
+\section{Syntactic analysis (parsing)}
+\subsection{a}
+           [s[np[article the][noun wumpus]][vp[verb stinks]]]
+\subsection{b}
+           [s[np[article the][noun wumpus]][vp[vp[verb is]][pp[preposition in][np[digit 1][digit 3]]]]]
+\subsection{c}
+\subsubsection{parse tree 1}
+              [s [np [article the] [noun agent] ] [vp [vp [vp [verb smells] ] [np [article the] [noun wumpus] ] ] [pp [preposition in] [np [digit 1] [digit 2] ] ] ] ]
+\subsubsection{parse tree 2}
+              [s [np [article the] [noun agent] ] [vp [vp [verb smells] ] [np [np [article the] [noun wumpus] ] [pp [preposition in] [np [digit 1] [digit 2] ] ] ] ] ]
+\subsection{d}
+New rule to be added: S $\to$ NP VP $|$ VP NP $|$ S conjunction S. \newline
+[s [s [vp [verb shoot] ] [np [article the] [noun wumpus] ] ] [conjunction and] [s [vp grab] [np [article the] [noun gold] ] ] ]
+
+\section{Speech recognition}
+The symbals used are described below:
+\begin{description}
+  \item[o] onset
+  \item[m] mid
+  \item[e] end
+\end{description}
+\begin{align*}
+v_{t,x} =& p(e_t|x) \max_{x1 \in X} (p(x|x1) v_{t-1,x1})\\
+v_{1,o} =& p(c1|o) = .5\\
+v_{1,m} =& p(c1|m) = 0\\
+v_{1,e} =& p(c1|e) = 0\\
+v_{2,o} =& p(c2|o) \max(p(o|o) v_{1,o}, p(o|m) v_{1,m}, p(o|e) v_{1,e}) = .2*.3*.5 = 0.03\\
+v_{2,m} =& p(c2|m) \max(p(m|o) v_{1,o}, p(m|m) v_{1,m}, p(m|e) v_{1,e}) = 0\\
+v_{2,e} =& p(c2|e) \max(p(e|o) v_{1,o}, p(e|m) v_{1,m}, p(e|e) v_{1,e}) = 0\\
+v_{3,o} =& p(c3|o) \max(v_{2,o} p(o|o), v_{2,m} p(o|m), v_{2,e} p(o|e)) = .3*.03*.3=0.0027\\
+v_{3,m} =& p(c3|m) \max(v_{2,o} p(m|o), v_{2,m} p(m|m), v_{2,e} p(m|e)) = .2*.03*.7=0.0042\\
+v_{3,e} =& p(c3|e) \max(v_{2,o} p(e|o), v_{2,m} p(e|m), v_{2,e} p(e|e)) = 0\\
+v_{4,o} =& p(c3|o) \max(v_{3,o}p(o|o), v_{3,m}p(o|m), v_{3,e}p(o|e))=.3*.0027*.3=0.000243\\
+v_{4,m} =& p(c3|m) \max(v_{3,o}p(m|o), v_{3,m}p(m|m), v_{3,e}p(m|e))=.2*.0042*.9=0.000756\\
+v_{4,e} =& p(c3|e) \max(v_{3,o}p(e|o), v_{3,m}p(e|m), v_{3,e}p(e|e))=0\\
+v_{5,o}=&p(c4|o)\max(v_{4,o}p(o|o),v_{4,m}p(o|m),v_{4,e}p(o|e))=0\\
+v_{5,m}=&p(c4|m)\max(v_{4,o}p(m|o),v_{4,m}p(m|m),v_{4,e}p(m|e))=.7*.000756*.9=0.00047628\\
+v_{5,e}=&p(c4|e)\max(v_{4,o}p(e|o),v_{4,m}p(e|m),v_{4,e}p(e|e))=.1*.000756*.1=0.00000756\\
+v_{6,o}=&p(c4|o)\max(v_{5,o}p(o|o),v_{5,m}p(o|m),v_{5,e}p(o|e))=0\\
+v_{6,m}=&p(c4|m)\max(v_{5,o}p(m|o),v_{5,m}p(m|m),v_{5,e}p(m|e))=.7*.00000756*.9=.0000047628\\
+v_{6,e}=&p(c4|e)\max(v_{5,o}p(e|o),v_{5,m}p(e|m),v_{5,e}p(e|e))=.1*.00047628*.1=.0000047628\\
+v_{7,o}=&p(c6|o)\max(v_{6,o}p(o|o),v_{6,m}p(o|m),v_{6,e}p(o|e))=0\\
+v_{7,m}=&p(c6|m)\max(v_{6,o}p(m|o),v_{6,m}p(m|m),v_{6,e}p(m|e))=0\\
+v_{7,e}=&p(c6|e)\max(v_{6,o}p(e|o),v_{6,m}p(e|m),v_{6,e}p(e|e))=.5*.0000047628*.4=9.5256e-7\\
+v_{8,o}=&p(c7|o)\max(v_{7,o}p(o|o),v_{7,m}p(o|m),v_{7,e}p(o|e))=0\\
+v_{8,m}=&p(c7,m)\max(v_{7,o}p(m|o),v_{7,m}p(m|m),v_{7,e}p(m|e))=0\\
+v_{8,e}=&p(c7,e)\max(v_{7,o}p(e|o),v_{7,m}p(e|m),v_{7,e}p(e|e))=.4*9.5256e-7*.4=1.524096e-7
+\end{align*}
+\begin{table}[htb] \centering
+  \begin{tabularx}{\textwidth}{|l|l|X|X|X|} \hline
+    $t$ & $evidence$ & $v_{t,o}$ & $v_{t,m}$ & $v_{t,e}$ \\ \hline
+    1 & c1 & .5 & 0 & 0 \\ \hline
+    2 & c2 & 0.03(o) & 0 & 0 \\ \hline
+    3 & c3 & 0.0027(o) & 0.0042(o) & 0 \\ \hline
+    4 & c3 & 0.000243(o) & 0.000756(m) & 0 \\ \hline
+    5 & c4 & 0 & 0.00047628(m) & 0.00000756(m) \\ \hline
+    6 & c4 & 0 & 0.0000047628(m) & 0.00000756*.4(m) \\ \hline
+    7 & c6 & 0 & 0 & 9.5256e-7(e) \\ \hline
+    8 & c7 & 0 & 0 & 1.524096e-7(e) \\ \hline
+  \end{tabularx}
+  \caption{Viterbi algorithm, with the most likely predecessor in parenthesis}
+  \label{viterbi}
+\end{table}
+Path = o,o,m,m,m,e,e,e; Probability = 1.524096e-7
+
+\end{document}
