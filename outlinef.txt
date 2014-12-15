@@ -1,0 +1,159 @@
+CptS 440/540
+Final Exam Outline
+Fall 2014
+
+Note: The following topics will be covered on the exam. The exam will be
+      closed-book and closed-notes. No computers, but you will need a
+      calculator.
+
+Introduction
+- Definition of AI
+- Four approaches to AI: Think/Act Humanly/Rationally
+- Turing test
+- Wumpus world
+
+Agents
+- Definitions: Agent, Percept, Rational Agent
+- PEAS description of task environment
+  - Performance, Environment, Actuators, Sensors
+- Task environment properties
+  - Fully vs. partially observable
+  - Deterministic vs. stochastic
+  - Static vs. dynamic
+- Types of agents
+  - Reflex
+  - Model-based
+  - Goal-based
+  - Utility-based
+  - Learning (critic, learning element, problem generator)
+
+Search
+- Five parts of search problem: initial state, actions, transition model,
+  goal test, path (step) cost
+  - Examples: tic-tac-toe, 8-puzzle, wumpus world
+- State space, search tree, search graph, path, frontier
+- Uninformed search (know algorithm)
+  - Breadth-first
+  - Depth-first
+  - Iterative deepening depth-first
+- Heuristic functions
+  - Admissible heuristics
+  - Designing good heuristics
+  - Heuristics: city-block, straight-line
+- Informed search (know algorithm)
+  - A*
+- Local search (know algorithm)
+  - Hill climbing (stochastic, first choice, random-restart)
+- Adversarial search
+  - Game tree
+  - Minimax (know algorithm)
+  - Alpha-beta pruning (know algorithm)
+  - Games: chess, checkers, backgammon, poker
+
+Logic
+- Knowledge-based agent
+- Wumpus world
+- First-order logic
+  - Syntax and semantics
+  - Properties of quantifiers
+  - Closed-world assumption
+  - Translate word problems to first-order logic
+- Inference in first-order logic
+  - Unification (know algorithm)
+  - Conversion to CNF
+  - Resolution
+    - Proof by refutation (know algorithm)
+
+Uncertainty
+- Rational agent maximizes expected utility
+- Probability
+  - Axioms
+  - Unconditional (prior) or conditional (posterior)
+  - Random variable
+  - Distribution
+- Probabilistic inference (execute all below)
+  - Using full joint probability distribution
+  - Normalization
+  - Independence and conditional independence
+  - Bayes' rule
+
+Probabilistic Reasoning
+- Bayesian networks
+  - Definition: nodes, links, conditional probability tables
+  - Exact inference (execute)
+
+Learning
+- Learning agent: performance, critic, feedback, learning element,
+  learning goals, problem generator
+- Supervised learning
+  - Terminology: attribute, instance, class, example, training set,
+    target concept, hypothesis, hypothesis class
+  - Learning goal
+  - Error: sample error, true error, generalization error, false positive,
+    false negative
+  - Overfitting, bias and variance
+  - Model selection and hypothesis evaluation using cross-validation
+  - Decision trees
+    - Entropy and information gain (compute)
+    - Learning algorithm (execute)
+  - Neural network
+    - Perceptron classification, regression, training (execute)
+    - Logistic function
+    - Multilayer perceptron topology
+  - Nearest neighbor
+    - Distance metrics: Euclidean, Hamming
+    - Choosing k
+    - Algorithm (execute)
+  - Probabilistic learning
+    - Bayes classifier (execute)
+    - Naive Bayes classifier (execute)
+      - Independence assumption
+      - Dealing with zero probabilities
+- Unsupervised learning
+  - k-means clustering (execute)
+  - Choosing k
+- Reinforcement learning
+  - State, action, reward, policy
+  - Discount factor
+  - Utility-based agent
+    - Utility
+    - Utility estimation given action model (compute)
+    - Temporal-difference utility estimation (compute)
+  - Passive vs. active learning
+  - Exploration function
+  - Learning rate function
+  - Q-learning agent (execute)
+    - Q function
+    - Utility based on Q function
+    - Update Q values given action model
+    - Update Q values using temporal difference
+    - Approach to wumpus world
+
+Natural Language
+- Definitions: language, grammar, syntax, semantics
+- N-gram word models
+  - How to compute and use models
+- Text classification
+  - How to classify documents using Bayes' rule
+- Natural language for communication
+  - Definitions: context-free grammar, augmented grammar, lexicon, parse tree
+  - Parsing: Generate parse tree(s) of sentence given grammar and lexicon
+  - Generating semantics using an augmented grammar
+- Speech recognition
+  - Definitions: phonemes
+  - Acoustic model
+    - Frame features from acoustic signal
+    - Hidden Markov Model for phoneme recognition
+    - Calculate probability of HMM given sequence of frame features
+  - Language model
+    - Hidden Markov Model for word recognition
+    - Calculate probability of HMM given sequence of phonemes
+
+Conclusions
+- Definitions: strong AI, weak AI, bounded optimality
+- Chinese room argument against strong AI
+- Ethical issues
+  - AI used for illicit ends
+  - AI responsibility
+  - AI ending human race
+  - Robot/AI rights
